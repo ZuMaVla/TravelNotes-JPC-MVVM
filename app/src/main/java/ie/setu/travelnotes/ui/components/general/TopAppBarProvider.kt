@@ -1,6 +1,5 @@
 package ie.setu.travelnotes.ui.components.general
 
-import android.view.MenuItem
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -9,24 +8,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import ie.setu.travelnotes.navigation.AppDestination
 import ie.setu.travelnotes.navigation.AddPlace
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import androidx.compose.material.icons.automirrored.filled.Login
-
+import androidx.compose.material.icons.automirrored.filled.Logout
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,8 +28,10 @@ import androidx.compose.material.icons.automirrored.filled.Login
 fun TopAppBarProvider(
     currentScreen: AppDestination,
     canNavigateBack: Boolean,
+    isUserLoggedIn: Boolean,
     onLoginClick: () -> Unit = {},
-    navigateUp: () -> Unit = {}
+    navigateUp: () -> Unit = {},
+    onLogoutClick: () -> Unit
 )
 {
     TopAppBar(
@@ -69,15 +65,26 @@ fun TopAppBarProvider(
 
         },
         actions = {
-            IconButton(onClick = onLoginClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Login,
-                    contentDescription = "Login",
-                    tint = Color.White,
-                    modifier = Modifier.size(30.dp)
-                )
+            if (isUserLoggedIn) {
+                IconButton(onClick = onLogoutClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "Logout",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             }
-
+            else{
+                IconButton(onClick = onLoginClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Login,
+                        contentDescription = "Login",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
         }
     )
 }
@@ -87,7 +94,13 @@ fun TopAppBarProvider(
 @Composable
 fun TopAppBarPreview() {
     TravelNotesTheme {
-        TopAppBarProvider(AddPlace,
-            true)
+        TopAppBarProvider(
+            AddPlace,
+            true,
+            true,
+            navigateUp = {},
+            onLoginClick = {},
+            onLogoutClick = {}
+        )
     }
 }
