@@ -7,9 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
 import ie.setu.travelnotes.ui.screens.about.AboutScreen
 import ie.setu.travelnotes.ui.screens.add.AddScreen
 import ie.setu.travelnotes.ui.screens.authentication.AuthScreen
+import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 import ie.setu.travelnotes.ui.screens.details.DetailsScreen
 import ie.setu.travelnotes.ui.screens.list.ListScreen
 import ie.setu.travelnotes.ui.screens.map.MapScreen
@@ -18,7 +20,8 @@ import ie.setu.travelnotes.ui.screens.map.MapScreen
 fun NavHostProvider(
     modifier: Modifier,
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: AuthViewModel,
 ) {
     NavHost(
         navController = navController,
@@ -27,7 +30,10 @@ fun NavHostProvider(
 
         composable(route = Auth.route) {
             //call our 'Auth' Screen Here
-            AuthScreen(modifier = modifier)
+            AuthScreen(modifier = modifier,
+                viewModel = viewModel,
+                onLoginSuccess = {navController.navigate(ListPlace.route)},
+            )
         }
         composable(route = ListPlace.route) {
             //call our 'List' Screen Here
