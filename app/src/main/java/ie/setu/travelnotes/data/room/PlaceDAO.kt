@@ -13,6 +13,9 @@ interface PlaceDAO {
     @Query("SELECT * FROM placemodel")
     fun getAll(): Flow<List<PlaceModel>>
 
+    @Query("SELECT * FROM placemodel WHERE userId = :userId")
+    fun getAllByUser(userId: String): Flow<List<PlaceModel>>
+
     @Insert
     suspend fun insert(place: PlaceModel)
 

@@ -2,4 +2,6 @@
     <string name="app_name">TravelNotes</string>
     <string name="authTitle">Welcome to Travel Notes</string>
     <string name="authSubtitle">Please register or sign-in</string>
+    <string name="addTitle">Welcome to Travel Notes</string>
+    <string name="addSubtitle">Here you can add your place</string>
 </resources>
