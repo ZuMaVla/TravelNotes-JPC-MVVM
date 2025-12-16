@@ -28,8 +28,8 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
 fun AuthScreen(modifier: Modifier = Modifier,
-               viewModel: AuthViewModel = hiltViewModel(),
-               onLoginSuccess: () -> Unit) {
+               onLoginSuccess: () -> Unit,
+               viewModel: AuthViewModel) {
 
     val login by viewModel.loginState.collectAsState()
     val error by viewModel.error.collectAsState()

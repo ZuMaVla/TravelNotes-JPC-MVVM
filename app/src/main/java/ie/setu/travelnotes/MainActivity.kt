@@ -86,7 +86,7 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 modifier = modifier,
                 navController = navController,
                 paddingValues = paddingValues,
-                viewModel = authViewModel
+                authViewModel = authViewModel
             )
         },
         bottomBar = {

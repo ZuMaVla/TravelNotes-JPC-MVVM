@@ -21,7 +21,7 @@ fun NavHostProvider(
     modifier: Modifier,
     navController: NavHostController,
     paddingValues: PaddingValues,
-    viewModel: AuthViewModel,
+    authViewModel: AuthViewModel
 ) {
     NavHost(
         navController = navController,
@@ -30,14 +30,16 @@ fun NavHostProvider(
 
         composable(route = Auth.route) {
             //call our 'Auth' Screen Here
-            AuthScreen(modifier = modifier,
-                viewModel = viewModel,
-                onLoginSuccess = {navController.navigate(ListPlace.route)},
+            AuthScreen(
+                modifier = modifier,
+                onLoginSuccess = { navController.navigate(ListPlace.route) },
+                viewModel = authViewModel
             )
         }
         composable(route = ListPlace.route) {
             //call our 'List' Screen Here
-            ListScreen(modifier = modifier)
+            ListScreen(
+                modifier = modifier)
         }
         composable(route = About.route) {
             //call our 'About' Screen Here

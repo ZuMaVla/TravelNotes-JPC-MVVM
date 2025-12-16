@@ -14,10 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AddViewModel  @Inject
 constructor(private val placeRepository: PlaceRepository,
-            private val AuthService: AuthService
+            private val authService: AuthService
 ) : ViewModel() {
-    val userId = AuthService.userId!!
-//    var selectedDate: Long? = null
+    val userId = authService.userId!!
     var isError = mutableStateOf(false)
     var errorBody = mutableStateOf(Exception())
     var isLoading = mutableStateOf(false)
@@ -25,20 +24,23 @@ constructor(private val placeRepository: PlaceRepository,
 
 
 
-    fun addPlace(place: PlaceModel) = viewModelScope.launch {
-        try {
-            isLoading.value = true
-            placeRepository.insert(place, userId)
-            isError.value = false
-            isLoading.value = false
-        } catch (e: Exception) {
-            isError.value = true
-            errorBody.value = e
-            isLoading.value = false
-            Timber.i("PVM Insert Message : ${errorBody.value.message}")
+    fun addPlace(place: PlaceModel): Boolean {
+        viewModelScope.launch {
+            try {
+                isLoading.value = true
+                placeRepository.insert(place, userId)
+                isError.value = false
+                isLoading.value = false
+            } catch (e: Exception) {
+                isError.value = true
+                errorBody.value = e
+                isLoading.value = false
+                Timber.i("PVM Insert Message : ${errorBody.value.message}")
+            }
         }
-
+        return isError.value
     }
+
 
 
 }

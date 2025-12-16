@@ -16,6 +16,7 @@ data class PlaceModel(@PrimaryKey(autoGenerate = true)
                       var image: Uri = Uri.EMPTY,
                       var lat: Double = 51.8985,
                       var lng: Double = -8.4756,
-                      var rating: Double = 0.0
+                      var rating: Double = 0.0,
+                      var public: Boolean = false
 )
 

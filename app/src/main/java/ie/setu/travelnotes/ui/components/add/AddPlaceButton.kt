@@ -1,5 +1,6 @@
 package ie.setu.travelnotes.ui.components.add
 
+import android.widget.Toast
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -15,8 +16,7 @@ import ie.setu.travelnotes.ui.screens.list.ListViewModel
 fun AddPlaceButton(
     modifier: Modifier = Modifier,
     place: PlaceModel,
-    addViewModel: AddViewModel = hiltViewModel(),
-    listViewModel: ListViewModel = hiltViewModel(),
+    addViewModel: AddViewModel,
     onPlaceAdded: () -> Unit
 ) {
     val isError = addViewModel.isError.value
@@ -28,15 +28,22 @@ fun AddPlaceButton(
         CircularProgressIndicator()
         Text("Adding New Place...")
     }
+
+
+
+
     Button(
         onClick = {
             addViewModel.addPlace(place)
+            if (isError) {
+                Toast.makeText(context,errorBody.message,Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, "Place Added Successfully", Toast.LENGTH_LONG).show()
+                onPlaceAdded()
+            }
         }
 
-    ) {
-        Text(text = "Add Place")
-
-    }
+    ) { Text(text = "Add Place") }
 
 
 }

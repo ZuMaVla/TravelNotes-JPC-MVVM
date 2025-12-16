@@ -3,7 +3,6 @@ package ie.setu.travelnotes.ui.screens.add
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DatePicker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,26 +34,29 @@ fun AddScreen(modifier: Modifier = Modifier,
     ) {
         AddText()
         TravelDatePicker(
-            value = LocalDate.now(),
+            value = selectedDate ?: LocalDate.now(),
             onDateSelected = { selectedDate = it }
         )
         TextInput(
-//            value = placeName,
-            label = "Place Name",
+            value = placeName,
             onTextChange = { placeName = it },
-            modifier = Modifier
+            label = "Place Name",
+            modifier = modifier
         )
         TextInput(
-//            value = placeDescription,
+            value = placeDescription,
+            onTextChange = { placeDescription = it },
             label = "Place Description",
-            onTextChange = { placeDescription = it }
+            modifier = modifier
         )
         AddPlaceButton(
             place = PlaceModel(
                 name = placeName,
                 description = placeDescription,
-                date = selectedDate ?: LocalDate.now()
+                date = selectedDate ?: LocalDate.now(),
+                userId = viewModel.userId
             ),
+            addViewModel = viewModel,
             onPlaceAdded = {
                 placeName = ""
                 placeDescription = ""

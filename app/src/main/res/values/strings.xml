@@ -4,4 +4,5 @@
     <string name="authSubtitle">Please register or sign-in</string>
     <string name="addTitle">Welcome to Travel Notes</string>
     <string name="addSubtitle">Here you can add your place</string>
+    <string name="listSubtitle">List of places available to you</string>
 </resources>
