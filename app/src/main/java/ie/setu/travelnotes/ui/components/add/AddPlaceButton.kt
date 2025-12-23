@@ -1,10 +1,12 @@
 package ie.setu.travelnotes.ui.components.add
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -15,35 +17,26 @@ import ie.setu.travelnotes.ui.screens.list.ListViewModel
 @Composable
 fun AddPlaceButton(
     modifier: Modifier = Modifier,
-    place: PlaceModel,
-    addViewModel: AddViewModel,
-    onPlaceAdded: () -> Unit
+    isEdit: Boolean = false,
+    isLoading: Boolean,
+    addUpdatePlace: () -> Unit
 ) {
-    val isError = addViewModel.isError.value
-    val errorBody = addViewModel.errorBody.value
-    val isLoading = addViewModel.isLoading.value
     val context = LocalContext.current
 
-    if(isLoading) {
-        CircularProgressIndicator()
-        Text("Adding New Place...")
-    }
-
-
-
-
-    Button(
-        onClick = {
-            addViewModel.addPlace(place)
-            if (isError) {
-                Toast.makeText(context,errorBody.message,Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(context, "Place Added Successfully", Toast.LENGTH_LONG).show()
-                onPlaceAdded()
-            }
+    if (isLoading) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator()
+            Text("Saving Place...")
         }
-
-    ) { Text(text = "Add Place") }
-
-
+    } else {
+        Button(
+            onClick = {
+                addUpdatePlace()
+            },
+            modifier = modifier
+        ) { Text( text = if (!isEdit) {"Add Place"} else {"Update Place"})}
+    }
 }
+
+
+

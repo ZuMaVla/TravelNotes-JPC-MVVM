@@ -2,6 +2,7 @@ package ie.setu.travelnotes.ui.components.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,20 +22,33 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
+    selectedPlace: PlaceModel?,
     place: PlaceModel,
     onPlaceClick: () -> Unit,
+    onPlaceLongClick: () -> Unit,
     onRefreshList: () -> Unit
 ) {
     Card(
         border = BorderStroke(1.dp, Color.Black),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
+        colors = if (selectedPlace?.id == place.id) {
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        },
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = 5.dp)
-            .clickable { onPlaceClick() }
+            .combinedClickable(
+                onClick = { onPlaceClick() },
+                onLongClick = { onPlaceLongClick() }
+            )
     ) {
         PlaceCardContent(
             place = place,
@@ -42,7 +56,6 @@ fun PlaceCard(
             modifier = modifier
         )
     }
-
 }
 
 @Composable
@@ -73,12 +86,14 @@ fun PlaceCardContent(place: PlaceModel,
 fun PlaceCardPreview() {
     TravelNotesTheme {
         PlaceCard(
+            selectedPlace = null,
             place = PlaceModel(
                 name = "Test Place",
                 description = "Test Description",
                 date = java.time.LocalDate.now()
             ),
             onPlaceClick = {},
+            onPlaceLongClick = {},
             onRefreshList = {}
         )
     }

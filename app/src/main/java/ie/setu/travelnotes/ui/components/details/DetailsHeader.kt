@@ -1,4 +1,4 @@
-package ie.setu.travelnotes.ui.components.add
+package ie.setu.travelnotes.ui.components.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,9 @@ import ie.setu.travelnotes.R
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
-fun AddText(modifier: Modifier = Modifier ) {
+fun DetailsHeader(modifier: Modifier = Modifier,
+                  title: String,
+                  subtitle: String) {
     Column(
         modifier = modifier.padding(
             top = 24.dp,
@@ -25,13 +27,13 @@ fun AddText(modifier: Modifier = Modifier ) {
         ),
         verticalArrangement = Arrangement.spacedBy(24.dp)) {
         Text(
-            text = stringResource(R.string.addTitle),
+            text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
             color = Color.Black
         )
         Text(
-            text = stringResource(R.string.addSubtitle),
+            text = subtitle,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.tertiary
@@ -41,9 +43,11 @@ fun AddText(modifier: Modifier = Modifier ) {
 
 @Preview(showBackground = true)
 @Composable
-fun AddTextPreview() {
+fun WelcomePreview() {
     TravelNotesTheme {
-        AddText()
+        DetailsHeader(
+            title = "Place",
+            subtitle = "Description"
+        )
     }
 }
-

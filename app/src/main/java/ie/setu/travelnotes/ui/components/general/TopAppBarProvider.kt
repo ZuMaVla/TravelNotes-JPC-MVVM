@@ -63,6 +63,7 @@ fun TopAppBarProvider(
                     modifier = Modifier.size(30.dp)
                 )
 
+
         },
         actions = {
             if (isUserLoggedIn) {

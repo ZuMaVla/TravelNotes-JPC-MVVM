@@ -1,5 +1,6 @@
 package ie.setu.travelnotes.ui.screens.list
 
+import android.widget.Toast
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,11 +9,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ie.setu.travelnotes.MainActivity
 import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.Details
@@ -25,8 +28,12 @@ import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ListScreen(modifier: Modifier = Modifier,
+               selectedPlace: PlaceModel?,
                viewModel: ListViewModel = hiltViewModel(),
-               navController: NavHostController = rememberNavController()) {
+               navController: NavHostController = rememberNavController(),
+               onPlaceClick: (PlaceModel) -> Unit,
+               onPlaceLongClick: (PlaceModel) -> Unit
+) {
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentNavBackStackEntry?.destination
     val currentBottomScreen =
@@ -38,6 +45,7 @@ fun ListScreen(modifier: Modifier = Modifier,
     val userEmail = if (isActiveSession) currentUser?.email else ""
     val userId = if (isActiveSession) currentUser?.uid else ""
     val places = viewModel.uiPlaces.collectAsState().value
+    val context = LocalContext.current
 
 
 //    val userDestinations = if (!isActiveSession)
@@ -62,12 +70,14 @@ fun ListScreen(modifier: Modifier = Modifier,
         )
         PlaceList(
             places = places,
+            selectedPlace = selectedPlace,
             onPlaceClick = { navController.navigate(Details.route) },
+            onPlaceLongClick = {clickedPlace -> onPlaceLongClick(clickedPlace)
+                val messageToDisplay = "Long Click on place ID: ${clickedPlace.id}"
+                Toast.makeText(context, messageToDisplay, Toast.LENGTH_LONG).show()
+            },
             modifier = modifier,
             onRefreshList = { viewModel.getPlaces() }
         )
     }
-
-
-
 }

@@ -12,8 +12,10 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 @Composable
 internal fun PlaceList(
     modifier: Modifier = Modifier,
+    selectedPlace: PlaceModel?,
     places: List<PlaceModel>,
     onPlaceClick: (PlaceModel) -> Unit,
+    onPlaceLongClick: (PlaceModel) -> Unit,
     onRefreshList: () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -22,8 +24,10 @@ internal fun PlaceList(
             key = { place -> place.id }
         ) { place ->
             PlaceCard(
+                selectedPlace = selectedPlace,
                 place = place,
                 onPlaceClick = { onPlaceClick(place) },
+                onPlaceLongClick = { onPlaceLongClick(place) },
                 onRefreshList = onRefreshList
             )
         }
@@ -36,6 +40,7 @@ internal fun PlaceList(
 fun PlaceListPreview() {
     TravelNotesTheme {
         PlaceList(
+            selectedPlace = null,
             places = listOf(
                 PlaceModel(
                     name = "Test Place1",
@@ -51,6 +56,7 @@ fun PlaceListPreview() {
                 )
                 ),
             onPlaceClick = {},
+            onPlaceLongClick = {},
             onRefreshList = {}
         )
     }

@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
 import ie.setu.travelnotes.ui.screens.about.AboutScreen
 import ie.setu.travelnotes.ui.screens.add.AddScreen
@@ -19,9 +20,13 @@ import ie.setu.travelnotes.ui.screens.map.MapScreen
 @Composable
 fun NavHostProvider(
     modifier: Modifier,
+    selectedPlace: PlaceModel?,
     navController: NavHostController,
     paddingValues: PaddingValues,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    onPlaceClick: () -> Unit,
+    onPlaceUpdateSuccess: () -> Unit,
+    onPlaceLongClick: (place: PlaceModel) -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -39,7 +44,16 @@ fun NavHostProvider(
         composable(route = ListPlace.route) {
             //call our 'List' Screen Here
             ListScreen(
-                modifier = modifier)
+                modifier = modifier,
+                selectedPlace = selectedPlace,
+                onPlaceClick = { place ->
+                    onPlaceClick()
+                    navController.navigate(Details.route)
+                },
+                onPlaceLongClick = { place ->
+                    onPlaceLongClick(place)
+                },
+            )
         }
         composable(route = About.route) {
             //call our 'About' Screen Here
@@ -47,15 +61,37 @@ fun NavHostProvider(
         }
         composable(route = AddPlace.route) {
             //call our 'Add' Screen Here
-            AddScreen(modifier = modifier)
+            AddScreen(
+                modifier = modifier,
+                isEdit = false,
+                onPlaceUpdateSuccess = { onPlaceUpdateSuccess() },
+                navigateUp = { }
+            )
+        }
+        composable(
+            route = EditPlace.route,
+            arguments = EditPlace.arguments
+        ) {
+            //call our 'Add' Screen Here
+            AddScreen(
+                modifier = modifier,
+                isEdit = true,
+                onPlaceUpdateSuccess = { onPlaceUpdateSuccess() },
+                navigateUp = { navController.navigateUp() }
+            )
         }
         composable(route = MapPlace.route) {
             //call our 'Map' Screen Here
             MapScreen(modifier = modifier)
         }
-        composable(route = Details.route) {
+        composable(
+            route = Details.route,
+            arguments = Details.arguments
+        ) {
+            navBackStackEntry ->
+            val placeId = navBackStackEntry.arguments?.getString("placeId")
             //call our 'Details' Screen Here
-            DetailsScreen(modifier = modifier)
+            DetailsScreen(modifier = modifier, placeId = placeId)
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Details
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Map
@@ -36,6 +37,14 @@ object AddPlace : AppDestination {
     override val route = "add"
 }
 
+object EditPlace : AppDestination {
+    override val icon = Icons.Filled.Edit
+    override val label = "Edit Place"
+    const val placeId = "placeId"
+    override val route = "edit/{$placeId}"
+    val arguments = listOf(navArgument(placeId) { type = NavType.StringType })
+}
+
 object About : AppDestination {
     override val icon = Icons.Filled.Info
     override val label = "About"
@@ -45,7 +54,9 @@ object About : AppDestination {
 object Details : AppDestination {
     override val icon = Icons.Filled.Details
     override val label = "Details"
-    override val route = "details"
+    const val placeId = "placeId"
+    override val route = "details/{$placeId}"
+    val arguments = listOf(navArgument(placeId) { type = NavType.StringType })
 }
 
 object MapPlace : AppDestination {
@@ -55,5 +66,5 @@ object MapPlace : AppDestination {
 }
 
 val bottomAppBarDestinations = listOf(AddPlace, ListPlace, MapPlace, About)
-val allDestinations = listOf(AddPlace, ListPlace, MapPlace, About, Details, Auth)
+val allDestinations = listOf(AddPlace, EditPlace, ListPlace, MapPlace, About, Details, Auth)
 

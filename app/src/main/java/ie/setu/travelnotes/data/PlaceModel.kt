@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Entity
 data class PlaceModel(@PrimaryKey(autoGenerate = true)
-                      val id: Long = 0L,
+                      var id: Long = 0L,
                       var uid: String? = null,
                       var userId: String = "",
                       var name: String = "",

@@ -17,7 +17,7 @@ import ie.setu.travelnotes.R
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
-fun AddText(modifier: Modifier = Modifier ) {
+fun EditText(modifier: Modifier = Modifier ) {
     Column(
         modifier = modifier.padding(
             top = 24.dp,
@@ -31,7 +31,7 @@ fun AddText(modifier: Modifier = Modifier ) {
             color = Color.Black
         )
         Text(
-            text = stringResource(R.string.addSubtitle),
+            text = stringResource(R.string.editSubtitle),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.tertiary
@@ -41,9 +41,8 @@ fun AddText(modifier: Modifier = Modifier ) {
 
 @Preview(showBackground = true)
 @Composable
-fun AddTextPreview() {
+fun EditTextPreview() {
     TravelNotesTheme {
-        AddText()
+        EditText()
     }
 }
-

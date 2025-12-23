@@ -5,4 +5,5 @@
     <string name="addTitle">Welcome to Travel Notes</string>
     <string name="addSubtitle">Here you can add your place</string>
     <string name="listSubtitle">List of places available to you</string>
+    <string name="editSubtitle">Here you can edit your place</string>
 </resources>
