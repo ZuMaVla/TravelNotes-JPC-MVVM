@@ -8,7 +8,7 @@ typealias FBaseSignInR = Response<FirebaseUser>
 interface AuthService {
     var currentUser: FirebaseUser?
     var isUserAuthInFBase: Boolean
-    var userId: String?
+    var userId: String
 
     suspend fun signInUp(email: String, password: String): FBaseSignInR
     suspend fun signOut()

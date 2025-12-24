@@ -15,7 +15,8 @@ class AuthRepository
     : AuthService {
         override var currentUser: FirebaseUser? = fbAuth.currentUser
         override var isUserAuthInFBase: Boolean = fbAuth.currentUser != null
-        override var userId: String? = fbAuth.currentUser?.uid.orEmpty()
+        override var userId: String = fbAuth.currentUser?.uid ?: "guest"
+
 
     override suspend fun signInUp(email: String, password: String): FBaseSignInR {
         try {
@@ -43,7 +44,7 @@ class AuthRepository
         fbAuth.signOut()
         currentUser = null
         isUserAuthInFBase = false
-        userId = null
+        userId = "guest"
     }
 
 }

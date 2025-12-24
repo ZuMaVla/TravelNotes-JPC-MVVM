@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun DetailsScreen(modifier: Modifier = Modifier, viewModel: DetailsViewModel = hiltViewModel()) {
+fun DetailsScreen(modifier: Modifier = Modifier,
+                  placeId: String?,
+                  viewModel: DetailsViewModel = hiltViewModel()) {
 
 }
