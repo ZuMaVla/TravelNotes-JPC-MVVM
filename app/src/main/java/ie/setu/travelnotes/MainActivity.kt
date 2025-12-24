@@ -27,6 +27,7 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.firebase.auth.Response
+import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.ListPlace
 import ie.setu.travelnotes.navigation.NavHostProvider
@@ -35,6 +36,7 @@ import ie.setu.travelnotes.ui.components.general.BottomAppBarProvider
 import ie.setu.travelnotes.ui.components.general.SelectionTopBar
 import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
 import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
+import ie.setu.travelnotes.ui.screens.list.ListViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -59,7 +61,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TravelNotesApp(modifier: Modifier = Modifier,
                    navController: NavHostController = rememberNavController(),
-                   authViewModel: AuthViewModel = hiltViewModel()) {
+                   authViewModel: AuthViewModel = hiltViewModel(),
+                   listViewModel: ListViewModel = hiltViewModel()) {
 
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentNavBackStackEntry?.destination
@@ -90,13 +93,18 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
         selectedPlace = null
     }
 
+    fun deleteSelectedPlace() {
+        if (selectedPlace != null) { listViewModel.deletePlace(selectedPlace!!) }
+        clearSelection()
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
             if (currentDestination?.route == ListPlace.route && isPlaceSelected) {
                 SelectionTopBar(
                     onEditClick = { navController.navigate("edit/${selectedPlace?.id}") },
-                    onDeleteClick = { navController.navigate("delete/${selectedPlace?.id}") },
+                    onDeleteClick = { deleteSelectedPlace() },
                     onCancelClick = { clearSelection() }
                 )
             } else {
@@ -123,6 +131,7 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 navController = navController,
                 paddingValues = paddingValues,
                 authViewModel = authViewModel,
+                listViewModel = listViewModel,
                 onPlaceClick = { clearSelection() },
                 onPlaceUpdateSuccess = { clearSelection() },
                 onPlaceLongClick = { place -> onPlaceLongClick(place) }

@@ -11,9 +11,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import ie.setu.travelnotes.R
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +31,8 @@ fun SelectionTopBar(
     onDeleteClick: () -> Unit,
     onCancelClick: () -> Unit
 ) {
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = { Text(text = "Selection",
                        color = Color.White)
@@ -37,11 +47,21 @@ fun SelectionTopBar(
                     contentDescription = "Edit",
                     tint = Color.White)
             }
-            IconButton(onClick = onDeleteClick) {
+            IconButton(onClick = {
+                showDeleteConfirmDialog = true
+            }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = Color.White)
+            }
+            if (showDeleteConfirmDialog) {
+                ShowDeleteAlert(
+                    onDismiss = { showDeleteConfirmDialog = false },
+                    onDelete = {
+                        onDeleteClick()
+                        showDeleteConfirmDialog = false },
+                )
             }
             IconButton(onClick = onCancelClick) {
                 Icon(
@@ -50,6 +70,28 @@ fun SelectionTopBar(
                     tint = Color.White)
             }
         },
+    )
+}
+
+@Composable
+fun ShowDeleteAlert(
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss ,
+        title = { Text(stringResource(id = R.string.confirm_delete)) },
+        text = { Text(stringResource(id = R.string.confirm_delete_message)) },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onDelete()
+                }
+            ) { Text("Yes") }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) { Text("No") }
+        }
     )
 }
 

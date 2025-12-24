@@ -29,7 +29,7 @@ import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 @Composable
 fun ListScreen(modifier: Modifier = Modifier,
                selectedPlace: PlaceModel?,
-               viewModel: ListViewModel = hiltViewModel(),
+               viewModel: ListViewModel,
                navController: NavHostController = rememberNavController(),
                onPlaceClick: (PlaceModel) -> Unit,
                onPlaceLongClick: (PlaceModel) -> Unit

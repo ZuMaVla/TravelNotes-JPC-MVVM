@@ -55,6 +55,19 @@ constructor(private val placeRepository: PlaceRepository,
         }
     }
 
+    fun deletePlace(place: PlaceModel) {
+        viewModelScope.launch {
+            try {
+                placeRepository.delete(place, currentUser?.uid!!)
+                Timber.i("LVM: Place deleted, id=${place.id}")
+            } catch (e: Exception) {
+                isError.value = true
+                errorBody.value = e
+                Timber.e(e, "LVM: Error deleting place")
+            }
+        }
+    }
+
     fun isLoggedIn() = authService.isUserAuthInFBase
 
 

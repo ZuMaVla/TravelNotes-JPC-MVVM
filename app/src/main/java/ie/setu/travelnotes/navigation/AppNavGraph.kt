@@ -15,6 +15,7 @@ import ie.setu.travelnotes.ui.screens.authentication.AuthScreen
 import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 import ie.setu.travelnotes.ui.screens.details.DetailsScreen
 import ie.setu.travelnotes.ui.screens.list.ListScreen
+import ie.setu.travelnotes.ui.screens.list.ListViewModel
 import ie.setu.travelnotes.ui.screens.map.MapScreen
 
 @Composable
@@ -24,6 +25,7 @@ fun NavHostProvider(
     navController: NavHostController,
     paddingValues: PaddingValues,
     authViewModel: AuthViewModel,
+    listViewModel: ListViewModel,
     onPlaceClick: () -> Unit,
     onPlaceUpdateSuccess: () -> Unit,
     onPlaceLongClick: (place: PlaceModel) -> Unit,
@@ -41,11 +43,13 @@ fun NavHostProvider(
                 viewModel = authViewModel
             )
         }
+
         composable(route = ListPlace.route) {
             //call our 'List' Screen Here
             ListScreen(
                 modifier = modifier,
                 selectedPlace = selectedPlace,
+                viewModel = listViewModel,
                 onPlaceClick = { place ->
                     onPlaceClick()
                     navController.navigate(Details.route)
@@ -55,10 +59,12 @@ fun NavHostProvider(
                 },
             )
         }
+
         composable(route = About.route) {
             //call our 'About' Screen Here
             AboutScreen(modifier = modifier)
         }
+
         composable(route = AddPlace.route) {
             //call our 'Add' Screen Here
             AddScreen(
@@ -68,6 +74,7 @@ fun NavHostProvider(
                 navigateUp = { }
             )
         }
+
         composable(
             route = EditPlace.route,
             arguments = EditPlace.arguments
@@ -80,10 +87,12 @@ fun NavHostProvider(
                 navigateUp = { navController.navigateUp() }
             )
         }
+
         composable(route = MapPlace.route) {
             //call our 'Map' Screen Here
             MapScreen(modifier = modifier)
         }
+
         composable(
             route = Details.route,
             arguments = Details.arguments
