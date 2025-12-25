@@ -26,12 +26,14 @@ constructor(private val placeRepository: PlaceRepository,
     var errorBody = mutableStateOf(Exception())
     var isLoading = mutableStateOf(false)
 
-    val currentUser: FirebaseUser?
-        get() = authService.currentUser
     var email = mutableStateOf("")
 
     init {
-        getPlaces()
+        viewModelScope.launch {
+            authService.authStateFlow.collect { currentUser ->
+                    getPlaces()
+            }
+        }
     }
 
     fun getPlaces() {
@@ -43,7 +45,7 @@ constructor(private val placeRepository: PlaceRepository,
                         _places.value = placesList
                         isLoading.value = false
                         isError.value = false
-                        Timber.i("LVM: List updated, size: ${placesList.size}")
+                        Timber.i("LVM: List updated, size: ${placesList.size} for user: ${authService.userId}")
                     }
            } catch (e: Exception) {
                 isError.value = true
@@ -58,7 +60,7 @@ constructor(private val placeRepository: PlaceRepository,
     fun deletePlace(place: PlaceModel) {
         viewModelScope.launch {
             try {
-                placeRepository.delete(place, currentUser?.uid!!)
+                placeRepository.delete(place, authService.currentUser?.uid!!)
                 Timber.i("LVM: Place deleted, id=${place.id}")
             } catch (e: Exception) {
                 isError.value = true

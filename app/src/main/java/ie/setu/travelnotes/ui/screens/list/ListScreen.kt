@@ -40,10 +40,7 @@ fun ListScreen(modifier: Modifier = Modifier,
         allDestinations.find { it.route == currentDestination?.route } ?: Auth
     var startScreen = currentBottomScreen
 
-    val currentUser = viewModel.currentUser
     val isActiveSession = viewModel.isLoggedIn()
-    val userEmail = if (isActiveSession) currentUser?.email else ""
-    val userId = if (isActiveSession) currentUser?.uid else ""
     val places = viewModel.uiPlaces.collectAsState().value
     val context = LocalContext.current
 
