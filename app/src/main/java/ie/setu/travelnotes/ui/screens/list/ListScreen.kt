@@ -68,7 +68,7 @@ fun ListScreen(modifier: Modifier = Modifier,
         PlaceList(
             places = places,
             selectedPlace = selectedPlace,
-            onPlaceClick = { navController.navigate(Details.route) },
+            onPlaceClick = { onPlaceClick(it) },
             onPlaceLongClick = {clickedPlace -> onPlaceLongClick(clickedPlace)
                 val messageToDisplay = "Long Click on place ID: ${clickedPlace.id}"
                 Toast.makeText(context, messageToDisplay, Toast.LENGTH_LONG).show()
