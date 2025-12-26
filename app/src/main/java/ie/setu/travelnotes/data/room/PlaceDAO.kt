@@ -13,6 +13,12 @@ interface PlaceDAO {
     @Query("SELECT * FROM placemodel")
     fun getAll(): Flow<List<PlaceModel>>
 
+    @Query("SELECT * FROM placemodel WHERE (userId = :userId OR public = true)" )
+    fun getAllByUser(userId: String): Flow<List<PlaceModel>>
+
+    @Query("SELECT * FROM placemodel WHERE (id = :placeId)" )
+    fun getPlaceById(placeId: String): Flow<PlaceModel>
+
     @Insert
     suspend fun insert(place: PlaceModel)
 

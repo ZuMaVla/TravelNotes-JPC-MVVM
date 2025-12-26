@@ -24,7 +24,8 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 @Composable
 fun BottomAppBarProvider(
     navController: NavHostController,
-    currentScreen: AppDestination
+    currentScreen: AppDestination,
+    cancelSelection: () -> Unit = {}
 ) {
     //initializing the default selected item
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
@@ -47,6 +48,7 @@ fun BottomAppBarProvider(
                 label = { Text(text = navigationItem.label) },
                 icon = { Icon(navigationItem.icon, contentDescription = navigationItem.label) },
                 onClick = {
+                    cancelSelection()
                     navigationSelectedItem = index
                     navController.navigate(navigationItem.route) {
                         popUpTo(navController.graph.findStartDestination().id) {

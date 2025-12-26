@@ -7,7 +7,7 @@ import ie.setu.travelnotes.data.CommentModel
 import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.data.UserModel
 
-@Database(entities = [UserModel::class, PlaceModel::class, CommentModel::class], version = 1)
+@Database(entities = [UserModel::class, PlaceModel::class, CommentModel::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class AppDB : RoomDatabase() {
     abstract fun getUserDAO(): UserDAO

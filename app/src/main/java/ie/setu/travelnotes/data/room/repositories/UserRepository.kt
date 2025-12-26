@@ -9,6 +9,12 @@ class UserRepository @Inject
 constructor(private val userDAO: UserDAO) {
     fun getAll(): Flow<List<UserModel>> = userDAO.getAll()
 
+    fun get(id: Long) = userDAO.get(id)
+
+    suspend fun findByEmail(email: String): UserModel? {
+        return userDAO.findByEmail(email)
+    }
+
     suspend fun insert(user: UserModel)
     { userDAO.insert(user) }
 
