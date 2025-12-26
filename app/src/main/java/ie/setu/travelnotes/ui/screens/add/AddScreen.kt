@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.ui.components.add.AddPlaceButton
 import ie.setu.travelnotes.ui.components.add.AddText
 import ie.setu.travelnotes.ui.components.add.EditText
@@ -29,6 +28,9 @@ fun AddScreen(modifier: Modifier = Modifier,
     Timber.i("isEditing: $isEdit")
     val uiAddEditPlaceState = viewModel.uiAddEditPlaceState.collectAsState().value
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.getPlace(viewModel.placeId)
+    }
     LaunchedEffect(uiAddEditPlaceState.isSaved) {
         if (uiAddEditPlaceState.isSaved) {
             viewModel.onPlaceAdded()

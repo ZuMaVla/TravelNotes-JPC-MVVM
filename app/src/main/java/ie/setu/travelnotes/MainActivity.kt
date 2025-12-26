@@ -27,7 +27,6 @@ import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.firebase.auth.Response
-import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.ListPlace
 import ie.setu.travelnotes.navigation.NavHostProvider
@@ -132,7 +131,6 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 paddingValues = paddingValues,
                 authViewModel = authViewModel,
                 listViewModel = listViewModel,
-                onPlaceClick = { clearSelection() },
                 onPlaceUpdateSuccess = { clearSelection() },
                 onPlaceLongClick = { place -> onPlaceLongClick(place) }
             )

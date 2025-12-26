@@ -22,10 +22,12 @@ data class UiAddEditPlaceState(
     val placeName: String = "",
     val placeDescription: String = "",
     val selectedDate: LocalDate = LocalDate.now(),
+    val id: Long = 0L,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val error: String? = null,
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    val isEdit: Boolean = false
 )
 
 @HiltViewModel
@@ -33,27 +35,17 @@ class AddViewModel  @Inject
 constructor(
     private val placeRepository: PlaceRepository,
     private val authService: AuthService,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
     ) : ViewModel() {
-    val userId = authService.userId!!
+
     private var _uiAddEditPlaceState = MutableStateFlow(UiAddEditPlaceState())
     val uiAddEditPlaceState: StateFlow<UiAddEditPlaceState> = _uiAddEditPlaceState.asStateFlow()
+    val placeId: String = savedStateHandle[EditPlace.placeId] ?: ""
 
-    var isEdit: Boolean
-    var currentPlace: PlaceModel = PlaceModel()
+    private var originalPlace: PlaceModel? = null
+
     init {
-        val placeId: String? = savedStateHandle[EditPlace.placeId]
-        if (placeId != null) {
-            // If the ID exists, we are in EDIT mode.
-            isEdit = true
-            Timber.i("AEVM init: Attempting Edit mode. Loading place with ID: $placeId")
-        } else {
-            // If the ID is null, we are in ADD mode.
-            isEdit = false
-            Timber.i("AEVM init: In Add mode.")
-        }
-        getPlace(placeId?: "") //
-
+        getPlace(placeId) //
     }
 
     fun onNameChange(newName: String) {
@@ -73,28 +65,24 @@ constructor(
         _uiAddEditPlaceState.update { it.copy(isSaved = false, isError = false, error = null) }
     }
 
-    fun constructPlace(place: PlaceModel): PlaceModel {
-        place.name = uiAddEditPlaceState.value.placeName
-        place.description = uiAddEditPlaceState.value.placeDescription
-        place.date = uiAddEditPlaceState.value.selectedDate
-        return place
-    }
 
     fun addOrUpdatePlace() {
-        var place = currentPlace.copy()
-
-        place = constructPlace(place)
-
         viewModelScope.launch {
+            val uiState = uiAddEditPlaceState.value
             try {
                 _uiAddEditPlaceState.update { it.copy(isLoading = true) }
-                Timber.i("PVM: isEdit = $isEdit")
-                if (isEdit) {
-                    placeRepository.update(place, userId)
+                val place = originalPlace!!.copy(
+                    name = uiState.placeName,
+                    description = uiState.placeDescription,
+                    date = uiState.selectedDate
+                )
+
+                Timber.i("PVM: isEdit = ${uiState.isEdit}")
+                if (uiState.isEdit) {
+                    placeRepository.update(place, authService.userId)
                 }
                 else {
-                    place.userId = userId
-                    placeRepository.insert(place, userId)
+                    placeRepository.insert(place, authService.userId)
                 }
                 _uiAddEditPlaceState.update {
                     it.copy(
@@ -104,7 +92,6 @@ constructor(
                         isError = false
                     )
                 }
-                _uiAddEditPlaceState.update { it.copy(isError = false)}
             } catch (e: Exception) {
                 _uiAddEditPlaceState.update {
                     it.copy(
@@ -120,52 +107,56 @@ constructor(
     }
 
     fun getPlace(placeId: String?) {
-
         viewModelScope.launch {
             _uiAddEditPlaceState.update { it.copy(isLoading = true) }
-            try {
-                val placeToEdit = if (!placeId.isNullOrEmpty()) {
-                    placeRepository.getPlaceById(placeId).firstOrNull()
-                } else {
-                    null
-                }
-                if (placeToEdit != null) {
-                    currentPlace = placeToEdit
-                    isEdit = true
-                } else {
-                    currentPlace = PlaceModel()
-                    isEdit = false
-                }
+            val defaultPlace = PlaceModel().copy(id = -1L)
+            var placeNewOrToEdit = defaultPlace
 
-            } catch (e: Exception) {
-                currentPlace = PlaceModel()
-                isEdit = false
-            }
-            finally {
-                _uiAddEditPlaceState.update {
-                    it.copy(
-                        placeName = currentPlace.name,
-                        placeDescription = currentPlace.description,
-                        selectedDate = currentPlace.date,
-                        isLoading = false,
-                        error = null,
-                        isError = false
-                    )
+            if (placeId == null || placeId == "") {
+                Timber.i("AEVM Message : will attempt to add new place")
+            } else {
+                try {
+                    placeNewOrToEdit =
+                        placeRepository.getPlaceById(placeId).firstOrNull() ?: defaultPlace
+                    Timber.i("AEVM Message : Name : ${placeNewOrToEdit.name}")
+                } catch (e: Exception) {
+                    placeNewOrToEdit = defaultPlace
+                    Timber.i("AEVM Error Message : ${e.message}")
+                } finally {
+                    Timber.i("AEVM Message : Name : ${placeNewOrToEdit.name}")
                 }
-
-                Timber.i("AEVM Message : PlaceID : ${currentPlace.id}")
             }
+            if (placeNewOrToEdit != defaultPlace) {
+                _uiAddEditPlaceState.update { it.copy(isEdit = true) }
+            } else {
+                _uiAddEditPlaceState.update { it.copy(isEdit = false) }
+                placeNewOrToEdit = PlaceModel().copy()
+            }
+            updatePlaceState(placeNewOrToEdit)
+            originalPlace = placeNewOrToEdit.copy()
         }
     }
 
-    fun onPlaceAdded() {
+    private fun updatePlaceState(place: PlaceModel?) {
+        var temp = place
+        if (temp == null) {
+            temp = PlaceModel()
+        }
         _uiAddEditPlaceState.update {
             it.copy(
-                placeName = "",
-                placeDescription = "",
-                selectedDate = LocalDate.now()
+                placeName = temp.name,
+                placeDescription = temp.description,
+                selectedDate = temp.date,
+                id = temp.id,
+                isLoading = false,
+                error = null,
+                isError = false
             )
         }
+    }
+
+    fun onPlaceAdded() {        // To clear place details after saving
+        updatePlaceState(place = PlaceModel())
     }
 
 }

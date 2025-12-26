@@ -75,22 +75,22 @@ fun SelectionTopBar(
 
 @Composable
 fun ShowDeleteAlert(
-    onDismiss: () -> Unit,
     onDelete: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss ,
+        onDismissRequest = onDismiss,
         title = { Text(stringResource(id = R.string.confirm_delete)) },
         text = { Text(stringResource(id = R.string.confirm_delete_message)) },
         confirmButton = {
             Button(
                 onClick = {
-                    onDelete()
+                    onDismiss()
                 }
-            ) { Text("Yes") }
+            ) { Text("No") }
         },
         dismissButton = {
-            Button(onClick = onDismiss) { Text("No") }
+            Button(onClick = onDelete) { Text("Yes") }
         }
     )
 }

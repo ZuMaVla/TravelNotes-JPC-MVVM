@@ -24,7 +24,7 @@ constructor(private val placeDAO: PlaceDAO) {
 
     suspend fun update(place: PlaceModel, userId: String) {
         if (place.userId == userId) { placeDAO.update(place) }
-        else { Timber.e("User ID mismatch") }
+        else { Timber.e("User ID mismatch: Place's user ID: ${place.userId}, User ID: $userId") }
     }
 
     suspend fun delete(place: PlaceModel, userId: String) {

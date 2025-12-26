@@ -26,7 +26,6 @@ fun NavHostProvider(
     paddingValues: PaddingValues,
     authViewModel: AuthViewModel,
     listViewModel: ListViewModel,
-    onPlaceClick: () -> Unit,
     onPlaceUpdateSuccess: () -> Unit,
     onPlaceLongClick: (place: PlaceModel) -> Unit,
 ) {
@@ -51,8 +50,7 @@ fun NavHostProvider(
                 selectedPlace = selectedPlace,
                 viewModel = listViewModel,
                 onPlaceClick = { place ->
-                    onPlaceClick()
-                    navController.navigate(Details.route)
+                    navController.navigate("details/${place.id}")
                 },
                 onPlaceLongClick = { place ->
                     onPlaceLongClick(place)
@@ -100,7 +98,10 @@ fun NavHostProvider(
             navBackStackEntry ->
             val placeId = navBackStackEntry.arguments?.getString("placeId")
             //call our 'Details' Screen Here
-            DetailsScreen(modifier = modifier, placeId = placeId)
+            DetailsScreen(
+                modifier = modifier,
+//                placeId = placeId
+            )
         }
     }
 }
