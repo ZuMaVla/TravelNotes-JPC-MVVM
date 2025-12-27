@@ -7,7 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+//import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
 import ie.setu.travelnotes.ui.screens.about.AboutScreen
 import ie.setu.travelnotes.ui.screens.add.AddScreen

@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import ie.setu.travelnotes.data.PlaceModel
+//import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.ui.screens.add.AddViewModel
 import ie.setu.travelnotes.ui.screens.list.ListViewModel
 

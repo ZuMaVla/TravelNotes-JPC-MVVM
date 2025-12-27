@@ -16,7 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ie.setu.travelnotes.MainActivity
-import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+//import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.Details
 import ie.setu.travelnotes.navigation.ListPlace

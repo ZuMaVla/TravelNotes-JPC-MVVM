@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import ie.setu.travelnotes.firebase.firestore.localDate
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import java.time.LocalDate
 import java.time.ZoneId
@@ -29,7 +30,7 @@ import java.time.Instant
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelDatePicker(
-    value: LocalDate,                         // from VM
+    value: Long,                         // from VM
     onDateSelected: (LocalDate) -> Unit,       // goes to VM
     label: String = "Pick a date",
     modifier: Modifier = Modifier
@@ -37,13 +38,13 @@ fun TravelDatePicker(
     var showDialog by remember { mutableStateOf(false) }
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = value.toMillis()
+        initialSelectedDateMillis = value
     )
 
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     OutlinedTextField(
-        value = value.format(formatter),
+        value = value.localDate().format(formatter),
         onValueChange = {},
         label = { Text(label) },
         readOnly = true,
@@ -96,7 +97,7 @@ private fun millisToLocalDate(millis: Long): LocalDate {
 fun DatePickerPreview() {
     TravelNotesTheme {
         TravelDatePicker(
-            value = LocalDate.now(),
+            value = LocalDate.now().toMillis(),
             onDateSelected = {}
         )
     }

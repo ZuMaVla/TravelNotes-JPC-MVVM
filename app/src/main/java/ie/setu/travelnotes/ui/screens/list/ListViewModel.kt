@@ -3,10 +3,10 @@ package ie.setu.travelnotes.ui.screens.list
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ie.setu.travelnotes.data.PlaceModel
-import ie.setu.travelnotes.data.room.repositories.PlaceRepository
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+//import ie.setu.travelnotes.data.room.repositories.PlaceRepository
+import ie.setu.travelnotes.firebase.firestore.FirestorePlaceRepository
 import ie.setu.travelnotes.firebase.services.AuthService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel  @Inject
-constructor(private val placeRepository: PlaceRepository,
+constructor(private val placeRepository: FirestorePlaceRepository,
             private val authService: AuthService) : ViewModel() {
 
     private val _places = MutableStateFlow<List<PlaceModel>>(emptyList())

@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.localDate
+import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
@@ -75,7 +77,7 @@ fun PlaceCardContent(place: PlaceModel,
             style = MaterialTheme.typography.bodyMedium
         )
         Text(
-            text = place.date.toString(),
+            text = place.localDate().toString(),
             style = MaterialTheme.typography.bodyMedium
         )
     }
@@ -90,7 +92,7 @@ fun PlaceCardPreview() {
             place = PlaceModel(
                 name = "Test Place",
                 description = "Test Description",
-                date = java.time.LocalDate.now()
+                dateMillis = java.time.LocalDate.now().toMillis(),
             ),
             onPlaceClick = {},
             onPlaceLongClick = {},
