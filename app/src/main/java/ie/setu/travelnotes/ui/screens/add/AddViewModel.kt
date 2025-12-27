@@ -4,8 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.data.room.Converters
+//import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
 import ie.setu.travelnotes.data.room.repositories.PlaceRepository
+import ie.setu.travelnotes.firebase.firestore.FirestorePlaceRepository
+import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.EditPlace
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +25,8 @@ import javax.inject.Inject
 data class UiAddEditPlaceState(
     val placeName: String = "",
     val placeDescription: String = "",
-    val selectedDate: LocalDate = LocalDate.now(),
-    val id: Long = 0L,
+    val selectedDate: Long = LocalDate.now().toMillis(),
+    val id: String = "",
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val error: String? = null,
@@ -33,7 +37,7 @@ data class UiAddEditPlaceState(
 @HiltViewModel
 class AddViewModel  @Inject
 constructor(
-    private val placeRepository: PlaceRepository,
+    private val placeRepository: FirestorePlaceRepository,
     private val authService: AuthService,
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
@@ -56,7 +60,7 @@ constructor(
         _uiAddEditPlaceState.update { it.copy(placeDescription = newDescription) }
     }
 
-    fun onDateChange(newDate: LocalDate) {
+    fun onDateChange(newDate: Long) {
         _uiAddEditPlaceState.update { it.copy(selectedDate = newDate) }
     }
 
@@ -74,7 +78,7 @@ constructor(
                 val place = originalPlace!!.copy(
                     name = uiState.placeName,
                     description = uiState.placeDescription,
-                    date = uiState.selectedDate
+                    dateMillis = (uiState.selectedDate)
                 )
 
                 Timber.i("PVM: isEdit = ${uiState.isEdit}")
@@ -109,7 +113,7 @@ constructor(
     fun getPlace(placeId: String?) {
         viewModelScope.launch {
             _uiAddEditPlaceState.update { it.copy(isLoading = true) }
-            val defaultPlace = PlaceModel().copy(id = -1L)
+            val defaultPlace = PlaceModel().copy(id = "-1")
             var placeNewOrToEdit = defaultPlace
 
             if (placeId == null || placeId == "") {
@@ -117,7 +121,7 @@ constructor(
             } else {
                 try {
                     placeNewOrToEdit =
-                        placeRepository.getPlaceById(placeId).firstOrNull() ?: defaultPlace
+                        placeRepository.getPlaceById(placeId) ?: defaultPlace
                     Timber.i("AEVM Message : Name : ${placeNewOrToEdit.name}")
                 } catch (e: Exception) {
                     placeNewOrToEdit = defaultPlace
@@ -146,7 +150,7 @@ constructor(
             it.copy(
                 placeName = temp.name,
                 placeDescription = temp.description,
-                selectedDate = temp.date,
+                selectedDate = temp.dateMillis,
                 id = temp.id,
                 isLoading = false,
                 error = null,

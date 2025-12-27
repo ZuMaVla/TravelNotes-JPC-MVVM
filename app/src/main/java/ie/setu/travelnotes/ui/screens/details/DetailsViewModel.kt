@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ie.setu.travelnotes.data.PlaceModel
+//import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.data.room.repositories.PlaceRepository
+import ie.setu.travelnotes.firebase.firestore.FirestorePlaceRepository
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.localDate
 import ie.setu.travelnotes.navigation.Details
 import ie.setu.travelnotes.ui.screens.add.UiAddEditPlaceState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +32,7 @@ data class UiDetailsViewState(
 
 @HiltViewModel
 class DetailsViewModel  @Inject
-constructor(private val placeRepository: PlaceRepository,
+constructor(private val placeRepository: FirestorePlaceRepository,
             private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private var _uiDetailsViewState = MutableStateFlow(UiDetailsViewState())
     val uiDetailsViewState: StateFlow<UiDetailsViewState> = _uiDetailsViewState.asStateFlow()
@@ -45,7 +48,7 @@ constructor(private val placeRepository: PlaceRepository,
             _uiDetailsViewState.update { it.copy(isLoading = true) }
             try {
                 placeToDisplay = if (!placeId.isNullOrEmpty()) {
-                    placeRepository.getPlaceById(placeId).firstOrNull()
+                    placeRepository.getPlaceById(placeId)
                 } else {
                     null
                 }
@@ -57,7 +60,7 @@ constructor(private val placeRepository: PlaceRepository,
                     it.copy(
                         placeName = placeToDisplay!!.name,
                         placeDescription = placeToDisplay!!.description,
-                        selectedDate = placeToDisplay!!.date,
+                        selectedDate = placeToDisplay!!.dateMillis.localDate(),
                         isLoading = false,
                         error = null,
                     )

@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import ie.setu.travelnotes.firebase.firestore.localDate
+import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.ui.components.add.AddPlaceButton
 import ie.setu.travelnotes.ui.components.add.AddText
 import ie.setu.travelnotes.ui.components.add.EditText
@@ -51,8 +53,8 @@ fun AddScreen(modifier: Modifier = Modifier,
         if (!isEdit) AddText() else EditText()
 
         TravelDatePicker(
-            value = uiAddEditPlaceState.selectedDate,
-            onDateSelected = { viewModel.onDateChange(it) }
+            value = uiAddEditPlaceState.selectedDate.localDate().toMillis(),
+            onDateSelected = { viewModel.onDateChange(it.toMillis()) }
         )
         TextInput(
             value = uiAddEditPlaceState.placeName,

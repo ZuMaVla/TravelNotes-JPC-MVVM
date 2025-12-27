@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
-import ie.setu.travelnotes.data.PlaceModel
+//import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
@@ -45,14 +47,14 @@ fun PlaceListPreview() {
                 PlaceModel(
                     name = "Test Place1",
                     description = "Test Description1",
-                    date = java.time.LocalDate.now(),
-                    id = 1
+                    dateMillis = java.time.LocalDate.now().toMillis(),
+                    id = "1"
                 ),
                 PlaceModel(
                     name = "Test Place2",
                     description = "Test Description2",
-                    date = java.time.LocalDate.now(),
-                    id = 2
+                    dateMillis = java.time.LocalDate.now().toMillis(),
+                    id = "2"
                 )
                 ),
             onPlaceClick = {},
