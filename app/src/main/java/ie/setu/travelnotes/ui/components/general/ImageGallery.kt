@@ -48,6 +48,7 @@ fun ImageGallery (uri: String, rating: Int, onRatingChange: (Int) -> Unit) {
             contentDescription = null,
 //            contentScale = ContentScale.Crop,
             modifier = Modifier
+                .fillMaxSize()
 
         )
         RatingPicker(

@@ -21,6 +21,9 @@ import ie.setu.travelnotes.navigation.AddPlace
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Filter
+import androidx.compose.material.icons.filled.FilterAlt
+import ie.setu.travelnotes.navigation.ListPlace
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +34,8 @@ fun TopAppBarProvider(
     isUserLoggedIn: Boolean,
     onLoginClick: () -> Unit = {},
     navigateUp: () -> Unit = {},
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onFilterClick: (String) -> Unit = {}
 )
 {
     TopAppBar(
@@ -66,6 +70,16 @@ fun TopAppBarProvider(
 
         },
         actions = {
+            if (currentScreen.route == ListPlace.route) {
+                IconButton(onClick = { onFilterClick("PRIVATE") }) {
+                    Icon(
+                        imageVector = Icons.Filled.FilterAlt,
+                        contentDescription = "Filter",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
             if (isUserLoggedIn) {
                 IconButton(onClick = onLogoutClick) {
                     Icon(
