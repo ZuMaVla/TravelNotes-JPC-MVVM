@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 data class UiPlacesState(
     val places: List<PlaceModel> = emptyList(),
+    val placesToDisplay: List<PlaceModel> = emptyList(),
     val isLoading: Boolean = false,
     val errorBody: Exception? = null,
     val isError: Boolean = false
@@ -49,6 +50,7 @@ constructor(private val placeRepository: FirestorePlaceRepository,
                         _uiPlacesState.update {
                             it.copy(
                                 places = placesList,
+                                placesToDisplay = placesList,
                                 isLoading = false,
                                 errorBody = null,
                                 isError = false
@@ -60,6 +62,7 @@ constructor(private val placeRepository: FirestorePlaceRepository,
                 _uiPlacesState.update {
                     it.copy(
                         places = emptyList(),
+                        placesToDisplay = emptyList(),
                         isLoading = false,
                         errorBody = e,
                         isError = true
@@ -68,7 +71,6 @@ constructor(private val placeRepository: FirestorePlaceRepository,
                 val uiState = _uiPlacesState.value
                 Timber.e("LVM error message : ${uiState.errorBody?.message}")
             }
-
         }
     }
 
@@ -124,6 +126,30 @@ constructor(private val placeRepository: FirestorePlaceRepository,
 
     fun onFilterChanged(filterOption: String) {
         Timber.i("LVM: Filter option changed to $filterOption")
+        when (filterOption) {
+            "PUBLIC" -> {
+                _uiPlacesState.update {
+                    it.copy(
+                        placesToDisplay = it.places.filter { place -> place.public }
+                    )
+                }
+            }
+            "PRIVATE" -> {
+                _uiPlacesState.update {
+                    it.copy(
+                        placesToDisplay = it.places.filter { place -> place.userId == authService.userId }
+                    )
+                }
+            }
+            "AVAILABLE" -> {
+                _uiPlacesState.update {
+                    it.copy(
+                        placesToDisplay = it.places
+                    )
+                }
+            }
+            else -> {}
+}
 
     }
     fun isLoggedIn() = authService.isUserAuthInFBase

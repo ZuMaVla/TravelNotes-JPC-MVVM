@@ -1,5 +1,6 @@
 package ie.setu.travelnotes.ui.components.general
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -23,6 +24,12 @@ import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import ie.setu.travelnotes.navigation.ListPlace
 
 
@@ -71,13 +78,45 @@ fun TopAppBarProvider(
         },
         actions = {
             if (currentScreen.route == ListPlace.route) {
-                IconButton(onClick = { onFilterClick("PRIVATE") }) {
-                    Icon(
-                        imageVector = Icons.Filled.FilterAlt,
-                        contentDescription = "Filter",
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
-                    )
+                var isMenuExpanded by remember { mutableStateOf(false) }
+
+                Box {
+                    IconButton(onClick = { isMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.FilterAlt,
+                            contentDescription = "Filter Places",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+
+                    // The DropdownMenu itself
+                    DropdownMenu(
+                        expanded = isMenuExpanded,
+                        onDismissRequest = { isMenuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Show Public") },
+                            onClick = {
+                                onFilterClick("PUBLIC")
+                                isMenuExpanded = false // Close the menu
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Show Private") },
+                            onClick = {
+                                onFilterClick("PRIVATE")
+                                isMenuExpanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Show Available") },
+                            onClick = {
+                                onFilterClick("AVAILABLE")
+                                isMenuExpanded = false
+                            }
+                        )
+                    }
                 }
             }
             if (isUserLoggedIn) {
