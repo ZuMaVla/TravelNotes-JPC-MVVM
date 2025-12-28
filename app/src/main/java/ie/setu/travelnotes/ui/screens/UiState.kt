@@ -1,5 +1,7 @@
 package ie.setu.travelnotes.ui.screens
 
+import androidx.compose.ui.res.stringResource
+import ie.setu.travelnotes.R
 import ie.setu.travelnotes.firebase.firestore.Rating
 import ie.setu.travelnotes.firebase.firestore.toMillis
 import java.time.LocalDate
@@ -13,6 +15,7 @@ data class UiPlaceState(
     val imageToDisplay: String = "",
     val rating: List<Rating> = listOf(),
     val avgRating: Double = 0.0,
+    val public: Boolean = false,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val error: String? = null,

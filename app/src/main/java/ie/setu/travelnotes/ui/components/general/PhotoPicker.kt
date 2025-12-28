@@ -13,12 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
 fun ShowPhotoPicker(
     onPhotoUriChanged: (Uri) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var photoUri: Uri? by remember { mutableStateOf(null) }
@@ -47,9 +49,10 @@ fun ShowPhotoPicker(
                         mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
                     )
                 )
-            }
+            },
+            modifier = modifier
         ) {
-            Text("Change Profile Photo")
+            Text("Add Photo")
         }
     }
 }
