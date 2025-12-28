@@ -1,6 +1,9 @@
 package ie.setu.travelnotes.firebase.firestore
 
-
+data class Rating(
+    val value: Int,
+    val userId: String
+)
 
 data class PlaceModel(
 
@@ -15,12 +18,12 @@ data class PlaceModel(
 
     // Store as epoch millis
     var dateMillis: Long = System.currentTimeMillis(),
-
-    // Store as URL or empty string
-    var imageUrl: String = "",
-
+    // Store URIs of image gallery
+    var imageUris: List<String> = listOf(),
+    // Store image URI for display
+    var imageToDisplay: String = "",
     var lat: Double = 51.8985,
     var lng: Double = -8.4756,
-    var rating: Double = 0.0,
+    var rating: List<Rating> = listOf(),
     var public: Boolean = false
 )
