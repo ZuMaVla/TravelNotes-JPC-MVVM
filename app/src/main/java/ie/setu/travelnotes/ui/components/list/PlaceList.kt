@@ -1,13 +1,18 @@
 package ie.setu.travelnotes.ui.components.list
 
+import android.net.Uri
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
-import ie.setu.travelnotes.data.PlaceModel
+import androidx.core.net.toUri
+//import ie.setu.travelnotes.data.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
+import timber.log.Timber
 
 @Composable
 internal fun PlaceList(
@@ -26,10 +31,13 @@ internal fun PlaceList(
             PlaceCard(
                 selectedPlace = selectedPlace,
                 place = place,
+                imageUri = place.imageToDisplay,
                 onPlaceClick = { onPlaceClick(place) },
                 onPlaceLongClick = { onPlaceLongClick(place) },
                 onRefreshList = onRefreshList
             )
+            Timber.i("Image Uri: ${place.imageToDisplay}")
+            Timber.i("PlaceName: ${place.name}")
         }
     }
 }
@@ -45,14 +53,14 @@ fun PlaceListPreview() {
                 PlaceModel(
                     name = "Test Place1",
                     description = "Test Description1",
-                    date = java.time.LocalDate.now(),
-                    id = 1
+                    dateMillis = java.time.LocalDate.now().toMillis(),
+                    id = "1"
                 ),
                 PlaceModel(
                     name = "Test Place2",
                     description = "Test Description2",
-                    date = java.time.LocalDate.now(),
-                    id = 2
+                    dateMillis = java.time.LocalDate.now().toMillis(),
+                    id = "2"
                 )
                 ),
             onPlaceClick = {},

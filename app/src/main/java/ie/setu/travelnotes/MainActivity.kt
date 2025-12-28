@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 import androidx.navigation.NavHostController
@@ -25,8 +28,9 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
-import ie.setu.travelnotes.data.PlaceModel
+
 import ie.setu.travelnotes.firebase.auth.Response
+import ie.setu.travelnotes.firebase.firestore.PlaceModel
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.ListPlace
 import ie.setu.travelnotes.navigation.NavHostProvider
@@ -34,6 +38,7 @@ import ie.setu.travelnotes.navigation.allDestinations
 import ie.setu.travelnotes.ui.components.general.BottomAppBarProvider
 import ie.setu.travelnotes.ui.components.general.SelectionTopBar
 import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
+import ie.setu.travelnotes.ui.components.list.SortFAB
 import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 import ie.setu.travelnotes.ui.screens.list.ListViewModel
 
@@ -120,6 +125,9 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                         authViewModel.signOut()
                         navController.navigate(ListPlace.route)
                     },
+                    onFilterClick = { filterOption: String ->
+                        listViewModel.onFilterChanged(filterOption)
+                    }
                 )
             }
         },
@@ -135,6 +143,19 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 onPlaceLongClick = { place -> onPlaceLongClick(place) }
             )
         },
+        floatingActionButton = {
+            if (currentDestination?.route == ListPlace.route && !isPlaceSelected) {
+                SortFAB(
+                    onSortOptionSelected = { sortOption: String ->
+                        listViewModel.onSortChanged(sortOption)
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 48.dp)
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End, // Positions the floating button on the bottom right.
+
         bottomBar = {
             BottomAppBarProvider(navController,
                 currentScreen = currentBottomScreen,

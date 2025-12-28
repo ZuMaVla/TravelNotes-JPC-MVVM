@@ -55,85 +55,92 @@ fun AuthScreen(modifier: Modifier = Modifier,
         }
     }
 
-    Column {
-        Column(
-            modifier = modifier.padding(
-                start = 24.dp,
-                end = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            AuthScreenText()
 
-            AuthTextField(
-                value = viewModel.email,
-                onTextChange = { viewModel.email = it },
-                label = "Email"
-            )
-            AuthTextField(
-                value = viewModel.password,
-                onTextChange = { viewModel.password = it },
-                label = "Password"
-            )
-            if (error != null) {
-                Text(error!!)
-            }
-            if (login is Response.Loading) {
-                Box(modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                    Text("Loading...")
-                }
-            }
-            else {
-                Button(
-                    onClick = { viewModel.login() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primary,
+            Column {
+                Column(
+                    modifier = modifier.padding(
+                        start = 24.dp,
+                        end = 24.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    AuthScreenText()
 
-                        )
-                ) {
-                    Text("Register/Sign In")
-                }
-                val context = LocalContext.current
-                Button(
-                    onClick = { viewModel.signInWithGoogle(context) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                ) {
-                    Box(
-                    modifier = Modifier.padding(1.dp)
-                        .fillMaxWidth()
-                    ){
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Column {
-                                Image(
-                                    modifier = Modifier.padding(end = 30.dp, bottom = 0.dp)
-                                        .size(32.dp),
-                                    painter = painterResource(
-                                        id = R.drawable.ic_google_logo
-                                    ),
-                                    contentDescription = null
+                    AuthTextField(
+                        value = viewModel.email,
+                        onTextChange = { viewModel.email = it },
+                        label = "Email"
+                    )
+                    AuthTextField(
+                        value = viewModel.password,
+                        onTextChange = { viewModel.password = it },
+                        label = "Password"
+                    )
+                    if (error != null) {
+                        Text(error!!)
+                    }
+                    if (login is Response.Loading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                            Text("Loading...")
+                        }
+                    } else {
+                        Button(
+                            onClick = { viewModel.login() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .background(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+
+                                    )
+                        ) {
+                            Text("Register/Sign In")
+                        }
+                        val context = LocalContext.current
+                        Button(
+                            onClick = { viewModel.signInWithGoogle(context) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .background(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = MaterialTheme.colorScheme.primary
                                 )
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(1.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
+                                        Image(
+                                            modifier = Modifier
+                                                .padding(end = 30.dp, bottom = 0.dp)
+                                                .size(32.dp),
+                                            painter = painterResource(
+                                                id = R.drawable.ic_google_logo
+                                            ),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Text("Register/Sign In with Google")
+                                }
                             }
-                            Text("Register/Sign In with Google")
                         }
                     }
                 }
             }
         }
-    }
-}
+
+
 
 @Preview(showBackground = true)
 @Composable
@@ -184,7 +191,8 @@ fun PreviewAuthScreen() {
                 )
         ) {
             Box(
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier
+                    .padding(1.dp)
                     .fillMaxWidth()
             ){
                 Row(
@@ -192,7 +200,8 @@ fun PreviewAuthScreen() {
                 ){
                     Column {
                         Image(
-                            modifier = Modifier.padding(end = 30.dp, bottom = 0.dp)
+                            modifier = Modifier
+                                .padding(end = 30.dp, bottom = 0.dp)
                                 .size(32.dp),
                             painter = painterResource(
                                 id = R.drawable.ic_google_logo

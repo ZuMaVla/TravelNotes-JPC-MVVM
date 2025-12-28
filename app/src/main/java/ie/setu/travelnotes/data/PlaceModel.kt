@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity
-data class PlaceModel(@PrimaryKey(autoGenerate = true)
+data class RoomPlaceModel(@PrimaryKey(autoGenerate = true)
                       var id: Long = 0L,
                       var uid: String? = null,
                       var userId: String = "",
