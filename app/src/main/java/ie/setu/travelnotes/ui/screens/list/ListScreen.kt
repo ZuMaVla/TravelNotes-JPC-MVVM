@@ -39,16 +39,11 @@ fun ListScreen(modifier: Modifier = Modifier,
     val currentDestination = currentNavBackStackEntry?.destination
     val currentBottomScreen =
         allDestinations.find { it.route == currentDestination?.route } ?: Auth
-    var startScreen = currentBottomScreen
+    val uiListPlaceState = viewModel.uiPlacesState.collectAsState().value
 
-    val isActiveSession = viewModel.isLoggedIn()
-    val places = viewModel.uiPlaces.collectAsState().value
+    val places = uiListPlaceState.placesToDisplay
     val context = LocalContext.current
 
-
-//    val userDestinations = if (!isActiveSession)
-//        userSignedOutDestinations()
-//    else userSignedInDestinations()
 
     LaunchedEffect(Unit) {
         viewModel.getPlaces()
