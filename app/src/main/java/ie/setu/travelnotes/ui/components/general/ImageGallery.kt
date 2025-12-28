@@ -34,7 +34,7 @@ import coil.request.ImageRequest
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
-fun ImageGallery (uri: String, rating: Int) {
+fun ImageGallery (uri: String, rating: Int, onRatingChange: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +52,7 @@ fun ImageGallery (uri: String, rating: Int) {
         )
         RatingPicker(
             rating = rating,
-            onRatingChange = { /* Handle rating change */ },
+            onRatingChange = { onRatingChange(it) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(2.dp)

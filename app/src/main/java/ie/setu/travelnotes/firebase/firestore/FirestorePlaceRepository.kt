@@ -50,9 +50,6 @@ constructor(private val auth: AuthService,
             val documentRef = placesCollection.document()
             val ownedPlace = place.copy(id = documentRef.id, userId = userId)
             documentRef.set(ownedPlace).await()
-//            firestore.collection("places")
-//                .add(ownedPlace)
-//                .await()
             Timber.i("Inserted place with ID: ${ownedPlace.id}")
         } catch (e: Exception) {
             Timber.e(e, "Error inserting place")
@@ -84,6 +81,16 @@ constructor(private val auth: AuthService,
             }
         } catch (e: Exception) {
             Timber.e(e, "Error deleting place")
+        }
+    }
+    override suspend fun updateRating(placeId: String?, rating: List<Rating>) {
+        try {
+            if (placeId != null) {
+                placesCollection.document(placeId).update("rating", rating).await()
+                Timber.i("Updated rating for place with ID: $placeId")
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Error updating rating")
         }
     }
 }
