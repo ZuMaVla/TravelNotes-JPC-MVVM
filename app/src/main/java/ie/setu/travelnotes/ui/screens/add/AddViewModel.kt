@@ -75,6 +75,7 @@ constructor(
                     imageUris = uiState.imageUris,
                     imageToDisplay = uiState.imageToDisplay,
                     rating = uiState.rating,
+                    public = uiState.public
                 )
 
                 Timber.i("PVM: isEdit = ${uiState.isEdit}")
@@ -152,6 +153,7 @@ constructor(
                 imageToDisplay = temp.imageToDisplay,
                 rating = temp.rating,
                 avgRating = getAvgRating(temp.rating),
+                public = temp.public,
                 isLoading = false,
                 error = null,
                 isError = false
@@ -177,6 +179,10 @@ constructor(
                 )
             }
         }
+    }
+
+    fun onPublicChange(newPublic: Boolean) {
+        _uiPlaceState.update { it.copy(public = newPublic) }
     }
 
     private suspend fun uploadCustomPhotoUri(uri: Uri) : Uri {
