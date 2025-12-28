@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 //import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.firebase.firestore.FirestorePlaceRepository
 import ie.setu.travelnotes.firebase.firestore.PlaceModel
-import ie.setu.travelnotes.firebase.firestore.localDate
+import ie.setu.travelnotes.firebase.firestore.Rating
 import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.Details
 import ie.setu.travelnotes.ui.screens.UiPlaceState
@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,17 +30,20 @@ constructor(
 ) : ViewModel() {
     private var _uiDetailsViewState = MutableStateFlow(UiPlaceState())
     val uiDetailsViewState: StateFlow<UiPlaceState> = _uiDetailsViewState.asStateFlow()
+    var place: PlaceModel? = null
+    val placeId: String? = savedStateHandle[Details.placeId]
 
 
     init {
-        val placeId: String? = savedStateHandle[Details.placeId]
-        getPlace(placeId)
+        place = getPlace(placeId)
+        Timber.i("DVM Message : Name : ${placeId}")
     }
 
     fun getCurrentUserRating(): Int {
         return getIndividualRating(uiDetailsViewState.value.rating, authService.userId)
     }
-    fun getPlace(placeId: String?) {
+
+    fun getPlace(placeId: String?) : PlaceModel? {
         var placeToDisplay: PlaceModel? = PlaceModel()
         viewModelScope.launch {
             _uiDetailsViewState.update { it.copy(isLoading = true) }
@@ -72,6 +74,43 @@ constructor(
 
                 Timber.i("DVM Message : PlaceID : ${placeToDisplay!!.id}")
             }
+        }
+        return placeToDisplay
+    }
+
+    fun onRatingChange(vote: Int) {
+        val uiState = uiDetailsViewState.value
+        val ratings = uiState.rating
+        val newRatings: MutableList<Rating> = mutableListOf()
+        var ratingExists = false
+
+        ratings.forEach {
+            if (it.userId == authService.userId) {
+                newRatings.add(Rating(vote, it.userId))
+                ratingExists = true
+            } else {
+                newRatings.add(it)
+            }
+            }
+        if (!ratingExists) {
+            newRatings.add(Rating(vote, authService.userId))
+        }
+        _uiDetailsViewState.update {
+            it.copy(
+                rating = newRatings as List<Rating>
+            )
+
+        }
+        storeRating()
+    }
+
+    fun storeRating() {
+        viewModelScope.launch {
+            val newRating = uiDetailsViewState.value.rating
+            _uiDetailsViewState.update { it.copy(isLoading = true) }
+            placeRepository.updateRating(placeId, rating = newRating)
+
+            _uiDetailsViewState.update { it.copy(isLoading = false) }
         }
     }
 

@@ -1,8 +1,8 @@
 package ie.setu.travelnotes.firebase.firestore
 
 data class Rating(
-    val value: Int,
-    val userId: String
+    val value: Int = 0,
+    val userId: String = ""
 )
 
 data class PlaceModel(
