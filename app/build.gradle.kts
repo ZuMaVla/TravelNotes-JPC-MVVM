@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -97,4 +98,6 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.googleid)
 
+    //Coil
+    implementation(libs.coil.compose)
 }

@@ -10,6 +10,7 @@ import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.firebase.services.FirestoreService
 import ie.setu.travelnotes.firebase.services.Place
 import ie.setu.travelnotes.firebase.services.Places
+import ie.setu.travelnotes.firebase.services.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -17,8 +18,8 @@ import javax.inject.Inject
 
 class FirestorePlaceRepository @Inject
 constructor(private val auth: AuthService,
-            private val firestore: FirebaseFirestore) : FirestoreService
-{
+            private val firestore: FirebaseFirestore,
+) : FirestoreService {
     private val placesCollection = firestore.collection("places")
 
     // Get all places
