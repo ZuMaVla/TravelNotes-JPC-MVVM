@@ -1,6 +1,7 @@
 package ie.setu.travelnotes.ui.components.list
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -50,9 +51,12 @@ fun PlaceCard(
     place: PlaceModel,
     imageUri: String,
     onPlaceClick: () -> Unit,
-    onPlaceLongClick: () -> Unit,
-    onRefreshList: () -> Unit
+    onPlaceLongClick: (place: PlaceModel) -> Unit,
+    onRefreshList: () -> Unit,
+    currentUserId: String = ""
 ) {
+    val context = LocalContext.current
+
     Card(
         border = BorderStroke(1.dp, Color.Black),
         colors = if (selectedPlace?.id == place.id) {
@@ -72,7 +76,15 @@ fun PlaceCard(
             .padding(bottom = 5.dp)
             .combinedClickable(
                 onClick = { onPlaceClick() },
-                onLongClick = { onPlaceLongClick() }
+                onLongClick = { if (place.userId != currentUserId) {
+                    Toast.makeText(
+                        context,
+                        "You cannot edit or delete places created by other users",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    onPlaceLongClick(place)
+                } }
             )
     ) {
         PlaceCardContent(

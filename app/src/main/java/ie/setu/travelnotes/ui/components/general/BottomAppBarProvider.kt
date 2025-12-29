@@ -19,23 +19,30 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ie.setu.travelnotes.navigation.AppDestination
 import ie.setu.travelnotes.navigation.bottomAppBarDestinations
+import ie.setu.travelnotes.navigation.bottomAppBarDestinationsGuest
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
 fun BottomAppBarProvider(
     navController: NavHostController,
     currentScreen: AppDestination,
-    cancelSelection: () -> Unit = {}
+    cancelSelection: () -> Unit = {},
+    isUserLoggedIn: Boolean = false
 ) {
     //initializing the default selected item
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
+    var destinations = if (isUserLoggedIn) {
+        bottomAppBarDestinations
+    } else {
+        bottomAppBarDestinationsGuest
+    }
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
     ) {
         //getting the list of bottom navigation items
-        bottomAppBarDestinations.forEachIndexed { index, navigationItem ->
+        destinations.forEachIndexed { index, navigationItem ->
             //iterating all items with their respective indexes
             NavigationBarItem(
                 selected = navigationItem == currentScreen,
