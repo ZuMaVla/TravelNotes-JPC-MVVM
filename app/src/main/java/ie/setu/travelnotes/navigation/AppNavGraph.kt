@@ -18,6 +18,7 @@ import ie.setu.travelnotes.ui.screens.details.DetailsScreen
 import ie.setu.travelnotes.ui.screens.list.ListScreen
 import ie.setu.travelnotes.ui.screens.list.ListViewModel
 import ie.setu.travelnotes.ui.screens.map.MapScreen
+import ie.setu.travelnotes.ui.screens.map.MapViewModel
 
 @Composable
 fun NavHostProvider(
@@ -27,6 +28,7 @@ fun NavHostProvider(
     paddingValues: PaddingValues,
     authViewModel: AuthViewModel,
     listViewModel: ListViewModel,
+    mapViewModel: MapViewModel,
     onPlaceUpdateSuccess: () -> Unit,
     onPlaceLongClick: (place: PlaceModel) -> Unit,
 ) {
@@ -40,7 +42,8 @@ fun NavHostProvider(
             AuthScreen(
                 modifier = modifier,
                 onLoginSuccess = { navController.navigate(ListPlace.route) },
-                viewModel = authViewModel
+                viewModel = authViewModel,
+                mapViewModel = mapViewModel
             )
         }
 
@@ -89,7 +92,10 @@ fun NavHostProvider(
 
         composable(route = MapPlace.route) {
             //call our 'Map' Screen Here
-            MapScreen(modifier = modifier)
+            MapScreen(
+                modifier = modifier,
+                viewModel = mapViewModel
+            )
         }
 
         composable(
