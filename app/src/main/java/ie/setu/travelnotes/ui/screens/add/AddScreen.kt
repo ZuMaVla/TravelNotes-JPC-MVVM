@@ -54,17 +54,13 @@ fun AddScreen(modifier: Modifier = Modifier,
     Timber.i("isEditing: $isEdit")
     val uiAddEditPlaceState = viewModel.uiPlaceState.collectAsState().value
     val context = LocalContext.current
-    val latLng = LatLng(
-        uiAddEditPlaceState.lat,
-        uiAddEditPlaceState.lng
-    )
+
     LaunchedEffect(Unit) {
         viewModel.getPlace(viewModel.placeId)
     }
     LaunchedEffect(uiAddEditPlaceState.isSaved) {
         if (uiAddEditPlaceState.isSaved) {
             viewModel.onPlaceAdded()
-            viewModel.onNavigateAway()
             Toast.makeText(context, "Place Saved", Toast.LENGTH_LONG).show()
             onPlaceUpdateSuccess()
             navigateUp()

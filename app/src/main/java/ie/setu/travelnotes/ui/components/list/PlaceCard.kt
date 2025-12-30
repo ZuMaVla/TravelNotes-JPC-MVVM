@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,6 +45,7 @@ import coil.request.ImageRequest
 import ie.setu.travelnotes.ui.screens.getAvgRating
 
 
+
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
@@ -53,7 +55,6 @@ fun PlaceCard(
     onPlaceClick: () -> Unit,
     onPlaceLongClick: (place: PlaceModel) -> Unit,
     onRefreshList: () -> Unit,
-    currentUserId: String = ""
 ) {
     val context = LocalContext.current
 
@@ -66,7 +67,9 @@ fun PlaceCard(
             )
         } else {
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor =
+                    if (!place.public) { MaterialTheme.colorScheme.primary }
+                    else { MaterialTheme.colorScheme.surface },
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         },
@@ -76,15 +79,7 @@ fun PlaceCard(
             .padding(bottom = 5.dp)
             .combinedClickable(
                 onClick = { onPlaceClick() },
-                onLongClick = { if (place.userId != currentUserId) {
-                    Toast.makeText(
-                        context,
-                        "You cannot edit or delete places created by other users",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    onPlaceLongClick(place)
-                } }
+                onLongClick = { onPlaceLongClick(place) }
             )
     ) {
         PlaceCardContent(

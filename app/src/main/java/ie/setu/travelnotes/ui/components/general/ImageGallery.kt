@@ -1,6 +1,7 @@
 package ie.setu.travelnotes.ui.components.general
 
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,8 +35,14 @@ import coil.request.ImageRequest
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
 @Composable
-fun ImageGallery (uri: String, rating: Int, onRatingChange: (Int) -> Unit) {
+fun ImageGallery (
+    uri: String,
+    rating: Int,
+    onRatingChange: (Int) -> Unit,
+    onClick: () -> Unit
+) {
     Box(
+
         modifier = Modifier
             .fillMaxWidth()
 
@@ -46,10 +53,11 @@ fun ImageGallery (uri: String, rating: Int, onRatingChange: (Int) -> Unit) {
                 .crossfade(true)
                 .build(),
             contentDescription = null,
-//            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-
+                .clickable(
+                    onClick = { onClick() }
+                )
         )
         RatingPicker(
             rating = rating,

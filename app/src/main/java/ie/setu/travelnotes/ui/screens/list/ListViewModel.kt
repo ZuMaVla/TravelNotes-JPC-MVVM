@@ -39,7 +39,7 @@ constructor(private val placeRepository: FirestorePlaceRepository,
     init {
         viewModelScope.launch {
             authService.authStateFlow
-                .collectLatest { user -> getPlaces(user?.uid) }
+                .collectLatest { user -> getPlaces(user?.uid ?: "guest") }
         }
     }
 
@@ -47,32 +47,22 @@ constructor(private val placeRepository: FirestorePlaceRepository,
         viewModelScope.launch {
             _uiPlacesState.update { it.copy(isLoading = true) }
             try {
-                val flowUserGuest = if (userId == "guest") {
-                    placeRepository.getAllPublic()
-                } else {
-                    placeRepository.getAllByUser(userId?: "")
-                }
-
-                flowUserGuest.distinctUntilChanged()
-                    .collect { placesList ->
+                placeRepository.getAllByUser(userId ?: "guest")
+                    .collect { fetchedPlaces ->
                         _uiPlacesState.update {
                             it.copy(
-                                places = placesList,
-                                placesToDisplay = placesList,
-                                userId = userId ?: "guest",
+                                places = fetchedPlaces,
+                                placesToDisplay = fetchedPlaces,
                                 isLoading = false,
                                 errorBody = null,
                                 isError = false
                             )
                         }
-                        Timber.i("LVM: List updated, size: ${placesList.size} for user: ${authService.userId}")
+                        Timber.i("LVM: List updated, size: ${fetchedPlaces.size} for user: ${authService.userId}")
                     }
             } catch (e: Exception) {
                 _uiPlacesState.update {
                     it.copy(
-//                        places = emptyList(),
-//                        placesToDisplay = emptyList(),
-//                        userId = userId ?: "guest",
                         isLoading = false,
                         errorBody = e,
                         isError = true
@@ -132,6 +122,12 @@ constructor(private val placeRepository: FirestorePlaceRepository,
             }
             else -> {}
         }
+    }
+
+    fun onUserChanged() {
+        val userId: String = authService.userId
+        _uiPlacesState.update { it.copy(userId = userId) }
+        getPlaces(userId)
     }
 
     fun onFilterChanged(filterOption: String) {
