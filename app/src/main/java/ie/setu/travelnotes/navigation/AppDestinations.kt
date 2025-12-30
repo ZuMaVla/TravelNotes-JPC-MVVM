@@ -75,5 +75,6 @@ object MapPlace : AppDestination {
 }
 
 val bottomAppBarDestinations = listOf(AddPlace, ListPlace, MapPlace, About)
+val bottomAppBarDestinationsGuest = listOf(ListPlace, MapPlace, About, Auth)
 val allDestinations = listOf(AddPlace, EditPlace, ListPlace, MapPlace, About, Details, Auth)
 

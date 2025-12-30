@@ -27,6 +27,13 @@ constructor(private val auth: AuthService,
         return placesCollection.dataObjects()
     }
 
+    //Get all public places
+    override suspend fun getAllPublic(): Places {
+        val snapshot = placesCollection
+            .whereEqualTo("public", true)
+        return snapshot.dataObjects()
+    }
+
     // Get all places for a specific user
     override suspend fun getAllByUser(userId: String): Places {
         val snapshot = placesCollection
@@ -45,16 +52,35 @@ constructor(private val auth: AuthService,
         return snapshot.toObject()
     }
 
+//    override suspend fun insert(place: Place, userId: String) {
+//        try {
+//            val documentRef = placesCollection.document()
+//            val ownedPlace = place.copy(id = documentRef.id, userId = userId)
+//            documentRef.set(ownedPlace).await()
+//            Timber.i("Inserted place with ID: ${ownedPlace.id}")
+//        } catch (e: Exception) {
+//            Timber.e(e, "Error inserting place")
+//        }
+//    }
+
     override suspend fun insert(place: Place, userId: String) {
         try {
-            val documentRef = placesCollection.document()
-            val ownedPlace = place.copy(id = documentRef.id, userId = userId)
-            documentRef.set(ownedPlace).await()
-            Timber.i("Inserted place with ID: ${ownedPlace.id}")
+            val ownedPlace = place.copy(userId = userId)
+            val documentRef = placesCollection.add(ownedPlace).await()
+
+            placesCollection.document(documentRef.id)
+                .update("id", documentRef.id)
+                .await()
+            Timber.i("Inserted place with ID: ${documentRef.id}")
+
         } catch (e: Exception) {
             Timber.e(e, "Error inserting place")
         }
+
     }
+
+
+
 
     override suspend fun update(place: Place, userId: String) {
         try {

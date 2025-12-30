@@ -114,6 +114,28 @@ constructor(
         }
     }
 
+    fun onGalleryClick() {
+        Timber.i("DVM Message : Gallery clicked")
+        val uiState = uiDetailsViewState.value
+
+        if (uiDetailsViewState.value.imageUris.size > 1) {
+            var index = 0
+            for (i in uiState.imageUris.indices) {
+                if (uiState.imageUris[i] == uiState.imageToDisplay) {
+                    index = i
+                }
+            }
+            index++
+            if (index > uiState.imageUris.size - 1) {
+                index = 0
+            }
+            _uiDetailsViewState.update {
+                it.copy(
+                    imageToDisplay = uiState.imageUris[index]
+                )
+            }
+        }
+    }
 }
 
 

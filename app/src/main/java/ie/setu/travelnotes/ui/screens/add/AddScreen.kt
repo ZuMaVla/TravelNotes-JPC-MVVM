@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +26,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import ie.setu.travelnotes.firebase.firestore.localDate
 import ie.setu.travelnotes.firebase.firestore.toMillis
 import ie.setu.travelnotes.ui.components.add.AddPlaceButton
@@ -47,13 +54,13 @@ fun AddScreen(modifier: Modifier = Modifier,
     Timber.i("isEditing: $isEdit")
     val uiAddEditPlaceState = viewModel.uiPlaceState.collectAsState().value
     val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.getPlace(viewModel.placeId)
     }
     LaunchedEffect(uiAddEditPlaceState.isSaved) {
         if (uiAddEditPlaceState.isSaved) {
             viewModel.onPlaceAdded()
-            viewModel.onNavigateAway()
             Toast.makeText(context, "Place Saved", Toast.LENGTH_LONG).show()
             onPlaceUpdateSuccess()
             navigateUp()
@@ -171,7 +178,5 @@ fun AddScreen(modifier: Modifier = Modifier,
                 }
             }
         }
-
-
     }
 }

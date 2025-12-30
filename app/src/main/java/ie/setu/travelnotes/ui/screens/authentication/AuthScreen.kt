@@ -1,5 +1,6 @@
 package ie.setu.travelnotes.ui.screens.authentication
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,22 +32,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import ie.setu.travelnotes.R
 import ie.setu.travelnotes.firebase.auth.Response
 import ie.setu.travelnotes.ui.components.auth.AuthScreenText
 import ie.setu.travelnotes.ui.components.auth.AuthTextField
+import ie.setu.travelnotes.ui.components.auth.PasswordTextField
+import ie.setu.travelnotes.ui.screens.map.MapViewModel
 //import ie.setu.travelnotes.ui.screens.authentication.drawable
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AuthScreen(modifier: Modifier = Modifier,
                onLoginSuccess: () -> Unit,
-               viewModel: AuthViewModel) {
+               viewModel: AuthViewModel,
+               mapViewModel: MapViewModel
+) {
 
     val login by viewModel.loginState.collectAsState()
     val error by viewModel.error.collectAsState()
+    val locationPermissions = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
+
 
     LaunchedEffect(login) {
+        locationPermissions.launchMultiplePermissionRequest()
+        if (locationPermissions.allPermissionsGranted) {
+            mapViewModel.getLocationUpdates()
+        }
+
         if (login is Response.Success) {
             val isLoginSuccessful = (login as Response.Success).data
             if (isLoginSuccessful) {
@@ -71,7 +91,7 @@ fun AuthScreen(modifier: Modifier = Modifier,
                         onTextChange = { viewModel.email = it },
                         label = "Email"
                     )
-                    AuthTextField(
+                    PasswordTextField(
                         value = viewModel.password,
                         onTextChange = { viewModel.password = it },
                         label = "Password"

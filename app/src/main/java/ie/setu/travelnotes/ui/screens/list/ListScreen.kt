@@ -25,6 +25,7 @@ import ie.setu.travelnotes.navigation.allDestinations
 import ie.setu.travelnotes.ui.components.list.PlaceList
 import ie.setu.travelnotes.ui.components.list.PlaceListHeader
 import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
+import timber.log.Timber
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -45,9 +46,13 @@ fun ListScreen(modifier: Modifier = Modifier,
     val context = LocalContext.current
 
 
-    LaunchedEffect(Unit) {
-        viewModel.getPlaces()
-    }
+//    LaunchedEffect(uiListPlaceState.userId) {
+//        if (uiListPlaceState.userId.isNotEmpty()) {
+//            viewModel.getPlaces(uiListPlaceState.userId)
+//        Timber.i("LVM: ListScreen LaunchedEffect, userId: ${uiListPlaceState.userId}")
+//        }
+//    }
+
     Column(
         modifier = modifier.padding(
             start = 4.dp,
@@ -65,12 +70,24 @@ fun ListScreen(modifier: Modifier = Modifier,
             places = places,
             selectedPlace = selectedPlace,
             onPlaceClick = { onPlaceClick(it) },
-            onPlaceLongClick = {clickedPlace -> onPlaceLongClick(clickedPlace)
-                val messageToDisplay = "Long Click on place ID: ${clickedPlace.id}"
-                Toast.makeText(context, messageToDisplay, Toast.LENGTH_LONG).show()
-            },
+            onPlaceLongClick =
+                   { clickedPlace ->
+                        Timber.i("LVM: Place.userId: ${clickedPlace.userId}")
+                        Timber.i("LVM: userId: ${uiListPlaceState.userId}")
+                        if (clickedPlace.userId == uiListPlaceState.userId) {
+                            onPlaceLongClick(clickedPlace)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "You cannot edit or delete places created by other users",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                ,
             modifier = modifier,
-            onRefreshList = { viewModel.getPlaces() }
+            onRefreshList = {  },
         )
     }
 }
+

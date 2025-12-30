@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 //import ie.setu.travelnotes.data.PlaceModel
 import ie.setu.travelnotes.firebase.firestore.PlaceModel
@@ -56,12 +57,6 @@ constructor(
     fun onDateChange(newDate: Long) {
         _uiPlaceState.update { it.copy(selectedDate = newDate) }
     }
-
-    fun onNavigateAway() {
-        // Reset flags when the user navigates away, so events don't re-trigger.
-        _uiPlaceState.update { it.copy(isSaved = false, isError = false, error = null) }
-    }
-
 
     fun addOrUpdatePlace() {
         viewModelScope.launch {
@@ -153,7 +148,10 @@ constructor(
                 imageToDisplay = temp.imageToDisplay,
                 rating = temp.rating,
                 avgRating = getAvgRating(temp.rating),
+                lat = temp.lat,
+                lng = temp.lng,
                 public = temp.public,
+                isSaved = false,
                 isLoading = false,
                 error = null,
                 isError = false
@@ -197,4 +195,14 @@ constructor(
         }
         return uri
     }
+
+    fun onLocationSelected(latLng: LatLng) {
+        _uiPlaceState.update {
+            it.copy(
+                lat = latLng.latitude,
+                lng = latLng.longitude
+            )
+        }
+    }
+
 }

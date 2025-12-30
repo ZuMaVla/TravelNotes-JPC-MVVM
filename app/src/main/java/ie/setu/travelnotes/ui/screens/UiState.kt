@@ -15,6 +15,8 @@ data class UiPlaceState(
     val imageToDisplay: String = "",
     val rating: List<Rating> = listOf(),
     val avgRating: Double = 0.0,
+    val lat: Double = 51.8985,
+    val lng: Double = -8.4756,
     val public: Boolean = false,
     val isLoading: Boolean = false,
     val isError: Boolean = false,

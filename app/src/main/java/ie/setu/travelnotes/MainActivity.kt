@@ -1,5 +1,6 @@
 package ie.setu.travelnotes
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,12 +26,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.firebase.FirebaseApp
 import ie.setu.travelnotes.ui.theme.TravelNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 import ie.setu.travelnotes.firebase.auth.Response
 import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.ListPlace
 import ie.setu.travelnotes.navigation.NavHostProvider
@@ -41,6 +45,7 @@ import ie.setu.travelnotes.ui.components.general.TopAppBarProvider
 import ie.setu.travelnotes.ui.components.list.SortFAB
 import ie.setu.travelnotes.ui.screens.authentication.AuthViewModel
 import ie.setu.travelnotes.ui.screens.list.ListViewModel
+import ie.setu.travelnotes.ui.screens.map.MapViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -61,12 +66,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TravelNotesApp(modifier: Modifier = Modifier,
                    navController: NavHostController = rememberNavController(),
                    authViewModel: AuthViewModel = hiltViewModel(),
-                   listViewModel: ListViewModel = hiltViewModel()) {
+                   listViewModel: ListViewModel = hiltViewModel(),
+                   mapViewModel: MapViewModel = hiltViewModel()) {
 
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentNavBackStackEntry?.destination
@@ -123,6 +130,7 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                     },
                     onLogoutClick = {
                         authViewModel.signOut()
+                        listViewModel.onUserChanged()
                         navController.navigate(ListPlace.route)
                     },
                     onFilterClick = { filterOption: String ->
@@ -139,8 +147,10 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 paddingValues = paddingValues,
                 authViewModel = authViewModel,
                 listViewModel = listViewModel,
+                mapViewModel = mapViewModel,
                 onPlaceUpdateSuccess = { clearSelection() },
-                onPlaceLongClick = { place -> onPlaceLongClick(place) }
+                onPlaceLongClick = { place -> onPlaceLongClick(place) },
+                onLoginSuccess = { listViewModel.onUserChanged() }
             )
         },
         floatingActionButton = {
@@ -159,7 +169,9 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
         bottomBar = {
             BottomAppBarProvider(navController,
                 currentScreen = currentBottomScreen,
-                cancelSelection = { clearSelection() })
+                cancelSelection = { clearSelection() },
+                isUserLoggedIn = isUserLoggedIn,
+                )
         }
     )
 }

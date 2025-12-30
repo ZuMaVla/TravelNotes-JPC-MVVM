@@ -12,6 +12,8 @@ import ie.setu.travelnotes.ui.screens.getAvgRating
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,9 +22,10 @@ import javax.inject.Inject
 data class UiPlacesState(
     val places: List<PlaceModel> = emptyList(),
     val placesToDisplay: List<PlaceModel> = emptyList(),
+    val userId: String = "",
     val isLoading: Boolean = false,
     val errorBody: Exception? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
 )
 
 @HiltViewModel
@@ -35,34 +38,31 @@ constructor(private val placeRepository: FirestorePlaceRepository,
 
     init {
         viewModelScope.launch {
-            authService.authStateFlow.collect { currentUser ->
-                    getPlaces()
-            }
+            authService.authStateFlow
+                .collectLatest { user -> getPlaces(user?.uid ?: "guest") }
         }
     }
 
-    fun getPlaces() {
+    fun getPlaces(userId: String?) {
         viewModelScope.launch {
             _uiPlacesState.update { it.copy(isLoading = true) }
             try {
-                placeRepository.getAllByUser(authService.userId)
-                    .collect { placesList ->
+                placeRepository.getAllByUser(userId ?: "guest")
+                    .collect { fetchedPlaces ->
                         _uiPlacesState.update {
                             it.copy(
-                                places = placesList,
-                                placesToDisplay = placesList,
+                                places = fetchedPlaces,
+                                placesToDisplay = fetchedPlaces,
                                 isLoading = false,
                                 errorBody = null,
                                 isError = false
                             )
                         }
-                        Timber.i("LVM: List updated, size: ${placesList.size} for user: ${authService.userId}")
+                        Timber.i("LVM: List updated, size: ${fetchedPlaces.size} for user: ${authService.userId}")
                     }
             } catch (e: Exception) {
                 _uiPlacesState.update {
                     it.copy(
-                        places = emptyList(),
-                        placesToDisplay = emptyList(),
                         isLoading = false,
                         errorBody = e,
                         isError = true
@@ -101,27 +101,33 @@ constructor(private val placeRepository: FirestorePlaceRepository,
             "NAME" -> {
                 _uiPlacesState.update {
                     it.copy(
-                        places = it.places.sortedBy { place -> place.name }
+                        placesToDisplay = it.placesToDisplay.sortedBy { place -> place.name }
                     )
                 }
             }
             "DATE" -> {
                 _uiPlacesState.update {
                     it.copy(
-                        places = it.places.sortedBy { place -> place.dateMillis }
+                        placesToDisplay = it.placesToDisplay.sortedBy { place -> place.dateMillis }
                     )
                 }
             }
             "RATING" -> {
                 _uiPlacesState.update {
                     it.copy(
-                        places = it.places.sortedBy { place -> getAvgRating(place.rating) }
+                        placesToDisplay = it.placesToDisplay.sortedBy { place -> getAvgRating(place.rating) }
                             .reversed()
                     )
                 }
             }
             else -> {}
         }
+    }
+
+    fun onUserChanged() {
+        val userId: String = authService.userId
+        _uiPlacesState.update { it.copy(userId = userId) }
+        getPlaces(userId)
     }
 
     fun onFilterChanged(filterOption: String) {
@@ -149,10 +155,7 @@ constructor(private val placeRepository: FirestorePlaceRepository,
                 }
             }
             else -> {}
-}
-
+        }
     }
     fun isLoggedIn() = authService.isUserAuthInFBase
-
-
 }

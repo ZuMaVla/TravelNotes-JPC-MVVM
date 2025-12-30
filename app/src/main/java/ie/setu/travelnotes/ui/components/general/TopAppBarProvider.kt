@@ -103,7 +103,7 @@ fun TopAppBarProvider(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Show Private") },
+                            text = { Text("Show My Places") },
                             onClick = {
                                 onFilterClick("PRIVATE")
                                 isMenuExpanded = false

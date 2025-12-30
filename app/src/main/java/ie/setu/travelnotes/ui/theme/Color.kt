@@ -13,3 +13,9 @@ val Pink40 = Color(0xFF7D5260)
 val PrimaryBlue = Color(0xFF0E76CC)
 val SecondaryBlue = Color(0xFF2196F3)
 val TertiaryBlue = Color(0xFF03A9F4)
+
+val EmeraldLight = Color(0xFF50C878)
+
+val EmeraldDark = Color(0xFF00674F)
+
+

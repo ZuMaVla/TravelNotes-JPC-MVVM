@@ -1,6 +1,7 @@
 package ie.setu.travelnotes.ui.components.list
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -43,6 +45,7 @@ import coil.request.ImageRequest
 import ie.setu.travelnotes.ui.screens.getAvgRating
 
 
+
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
@@ -50,9 +53,11 @@ fun PlaceCard(
     place: PlaceModel,
     imageUri: String,
     onPlaceClick: () -> Unit,
-    onPlaceLongClick: () -> Unit,
-    onRefreshList: () -> Unit
+    onPlaceLongClick: (place: PlaceModel) -> Unit,
+    onRefreshList: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Card(
         border = BorderStroke(1.dp, Color.Black),
         colors = if (selectedPlace?.id == place.id) {
@@ -62,7 +67,9 @@ fun PlaceCard(
             )
         } else {
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor =
+                    if (!place.public) { MaterialTheme.colorScheme.primary }
+                    else { MaterialTheme.colorScheme.surface },
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         },
@@ -72,7 +79,7 @@ fun PlaceCard(
             .padding(bottom = 5.dp)
             .combinedClickable(
                 onClick = { onPlaceClick() },
-                onLongClick = { onPlaceLongClick() }
+                onLongClick = { onPlaceLongClick(place) }
             )
     ) {
         PlaceCardContent(
