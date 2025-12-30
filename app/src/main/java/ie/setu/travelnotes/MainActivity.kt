@@ -34,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import ie.setu.travelnotes.firebase.auth.Response
 import ie.setu.travelnotes.firebase.firestore.PlaceModel
+import ie.setu.travelnotes.firebase.services.AuthService
 import ie.setu.travelnotes.navigation.Auth
 import ie.setu.travelnotes.navigation.ListPlace
 import ie.setu.travelnotes.navigation.NavHostProvider
@@ -129,6 +130,7 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                     },
                     onLogoutClick = {
                         authViewModel.signOut()
+                        listViewModel.onUserChanged()
                         navController.navigate(ListPlace.route)
                     },
                     onFilterClick = { filterOption: String ->
@@ -147,7 +149,8 @@ fun TravelNotesApp(modifier: Modifier = Modifier,
                 listViewModel = listViewModel,
                 mapViewModel = mapViewModel,
                 onPlaceUpdateSuccess = { clearSelection() },
-                onPlaceLongClick = { place -> onPlaceLongClick(place) }
+                onPlaceLongClick = { place -> onPlaceLongClick(place) },
+                onLoginSuccess = { listViewModel.onUserChanged() }
             )
         },
         floatingActionButton = {

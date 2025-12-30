@@ -48,7 +48,8 @@ fun DetailsScreen(modifier: Modifier = Modifier,
                     ImageGallery(
                         uri = uiDetailsViewState.imageToDisplay,
                         rating = viewModel.getCurrentUserRating(),
-                        onRatingChange = { viewModel.onRatingChange(vote = it) }
+                        onRatingChange = { viewModel.onRatingChange(vote = it) },
+                        onClick = { viewModel.onGalleryClick() }
                     )
                 }
                 Column {

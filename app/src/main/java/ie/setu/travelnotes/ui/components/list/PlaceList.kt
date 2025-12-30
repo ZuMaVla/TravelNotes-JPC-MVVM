@@ -22,7 +22,6 @@ internal fun PlaceList(
     onPlaceClick: (PlaceModel) -> Unit,
     onPlaceLongClick: (PlaceModel) -> Unit,
     onRefreshList: () -> Unit,
-    currentUserId: String
 ) {
     LazyColumn(modifier = modifier) {
         items(
@@ -36,7 +35,6 @@ internal fun PlaceList(
                 onPlaceClick = { onPlaceClick(place) },
                 onPlaceLongClick = { onPlaceLongClick(place) },
                 onRefreshList = onRefreshList,
-                currentUserId = currentUserId
             )
             Timber.i("Image Uri: ${place.imageToDisplay}")
             Timber.i("PlaceName: ${place.name}")
@@ -68,7 +66,6 @@ fun PlaceListPreview() {
             onPlaceClick = {},
             onPlaceLongClick = {},
             onRefreshList = {},
-            currentUserId = ""
         )
     }
 

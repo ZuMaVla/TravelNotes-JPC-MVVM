@@ -29,6 +29,7 @@ fun NavHostProvider(
     authViewModel: AuthViewModel,
     listViewModel: ListViewModel,
     mapViewModel: MapViewModel,
+    onLoginSuccess: () -> Unit,
     onPlaceUpdateSuccess: () -> Unit,
     onPlaceLongClick: (place: PlaceModel) -> Unit,
 ) {
@@ -41,7 +42,9 @@ fun NavHostProvider(
             //call our 'Auth' Screen Here
             AuthScreen(
                 modifier = modifier,
-                onLoginSuccess = { navController.navigate(ListPlace.route) },
+                onLoginSuccess = {
+                    navController.navigate(ListPlace.route)
+                    onLoginSuccess() },
                 viewModel = authViewModel,
                 mapViewModel = mapViewModel
             )

@@ -58,12 +58,6 @@ constructor(
         _uiPlaceState.update { it.copy(selectedDate = newDate) }
     }
 
-    fun onNavigateAway() {
-        // Reset flags when the user navigates away, so events don't re-trigger.
-        _uiPlaceState.update { it.copy(isSaved = false, isError = false, error = null) }
-    }
-
-
     fun addOrUpdatePlace() {
         viewModelScope.launch {
             val uiState = uiPlaceState.value
@@ -157,6 +151,7 @@ constructor(
                 lat = temp.lat,
                 lng = temp.lng,
                 public = temp.public,
+                isSaved = false,
                 isLoading = false,
                 error = null,
                 isError = false
